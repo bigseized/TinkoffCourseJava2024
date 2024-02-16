@@ -3,29 +3,33 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import static edu.java.bot.utilities.ResponseMessages.DEFAULT_INCORRECT_COMMAND;
+import static edu.java.bot.utilities.ResponseMessages.START_COMMAND;
+import static edu.java.bot.utilities.ResponseMessages.START_DESCRIPTION;
+import static edu.java.bot.utilities.ResponseMessages.WELCOME_MESSAGE;
+import static edu.java.bot.utilities.ResponseMessages.WELCOME_TITLE;
 
 @Component
 public class StartCommand implements Command {
+
     @Override
     public String command() {
-        return "/start";
+        return START_COMMAND;
     }
 
     @Override
     public String description() {
-        return "запускает бота";
+        return START_DESCRIPTION;
     }
 
     @Override
     public SendMessage handle(Update update) {
         long chatId = getChatId(update);
         if (update.message().text().equals(command())) {
-            StringBuilder sendMessage = new StringBuilder();
-            sendMessage.append("""
-            ReminderBot - ващ главный помощник в мониторинге изменений!
-            Просто введите /track {ссылка} и бот сделает вашу жизнь проще!""");
-            return new SendMessage(chatId, sendMessage.toString());
+            String sendMessage = String.format(WELCOME_TITLE, update.message().from().firstName())
+                + WELCOME_MESSAGE;
+            return new SendMessage(chatId, sendMessage);
         }
-        return new SendMessage(chatId, "Команда содержит лишние символы/аргументы");
+        return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
     }
 }

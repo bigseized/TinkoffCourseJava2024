@@ -5,21 +5,25 @@ import com.pengrad.telegrambot.request.SendMessage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import static edu.java.bot.utilities.ResponseMessages.DEFAULT_INCORRECT_COMMAND;
+import static edu.java.bot.utilities.ResponseMessages.HELP_COMMAND;
+import static edu.java.bot.utilities.ResponseMessages.HELP_DESCRIPTION;
 
 @Component
 @RequiredArgsConstructor
 public class HelpCommand implements Command {
 
+    public static final String DELIMITER = " - ";
     private final List<Command> commands;
 
     @Override
     public String command() {
-        return "/help";
+        return HELP_COMMAND;
     }
 
     @Override
     public String description() {
-        return "выводит описание всех команд";
+        return HELP_DESCRIPTION;
     }
 
     @Override
@@ -27,11 +31,12 @@ public class HelpCommand implements Command {
         long chatId = getChatId(update);
         if (update.message().text().equals(command())) {
             StringBuilder sendMessage = new StringBuilder();
+            sendMessage.append(command()).append(DELIMITER).append(description()).append("\n");
             for (var command : commands) {
-                sendMessage.append(command.command()).append(" - ").append(command.description()).append("\n");
+                sendMessage.append(command.command()).append(DELIMITER).append(command.description()).append("\n");
             }
             return new SendMessage(chatId, sendMessage.toString());
         }
-        return new SendMessage(chatId, "Команда содержит лишние символы/аргументы");
+        return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
     }
 }

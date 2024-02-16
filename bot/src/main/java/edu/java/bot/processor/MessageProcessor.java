@@ -6,6 +6,7 @@ import edu.java.bot.commands.Command;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import static edu.java.bot.utilities.ResponseMessages.UNSUPPORTED_COMMAND;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +23,6 @@ public class MessageProcessor implements Processor {
                 }
             }
         }
-        return new SendMessage(chatId, "Не поддерживаемая команда введите /help для просмотра доступных команд");
+        return new SendMessage(chatId, UNSUPPORTED_COMMAND);
     }
 }
