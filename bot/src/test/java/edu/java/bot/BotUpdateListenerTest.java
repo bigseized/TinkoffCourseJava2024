@@ -6,8 +6,7 @@ import edu.java.bot.commands.ListCommand;
 import edu.java.bot.commands.StartCommand;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.commands.UntrackCommand;
-import edu.java.bot.sender.MessageSender;
-import edu.java.bot.sender.Sender;
+import edu.java.bot.sender.BotTextMessageSender;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class BotUpdateListenerTest {
                 new TrackCommand(),
                 new UntrackCommand()
             );
-        Sender sender = Mockito.mock(MessageSender.class);
+        BotTextMessageSender sender = Mockito.mock(BotTextMessageSender.class);
         BotUpdateListener listener = new BotUpdateListener(commandsList, sender);
         listener.process(List.of(mockUpdate));
         Mockito.verify(sender, Mockito.times(1))
@@ -46,7 +45,7 @@ class BotUpdateListenerTest {
                 new TrackCommand(),
                 new UntrackCommand()
             );
-        Sender sender = Mockito.mock(MessageSender.class);
+        BotTextMessageSender sender = Mockito.mock(BotTextMessageSender.class);
         BotUpdateListener listener = new BotUpdateListener(commandsList, sender);
         listener.process(List.of(mockUpdate));
         Mockito.verify(sender, Mockito.times(0))

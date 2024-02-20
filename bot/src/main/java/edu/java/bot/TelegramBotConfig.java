@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-public class TelegramBotSetup {
+public class TelegramBotConfig {
     private final ApplicationConfig applicationConfig;
 
     @Bean

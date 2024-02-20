@@ -29,14 +29,14 @@ public class HelpCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         long chatId = getChatId(update);
-        if (update.message().text().equals(command())) {
-            StringBuilder sendMessage = new StringBuilder();
-            sendMessage.append(command()).append(DELIMITER).append(description()).append("\n");
-            for (var command : commands) {
-                sendMessage.append(command.command()).append(DELIMITER).append(command.description()).append("\n");
-            }
-            return new SendMessage(chatId, sendMessage.toString());
+        if (!update.message().text().equals(command())) {
+            return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
         }
-        return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
+        StringBuilder sendMessage = new StringBuilder();
+        sendMessage.append(command()).append(DELIMITER).append(description()).append("\n");
+        for (var command : commands) {
+            sendMessage.append(command.command()).append(DELIMITER).append(command.description()).append("\n");
+        }
+        return new SendMessage(chatId, sendMessage.toString());
     }
 }

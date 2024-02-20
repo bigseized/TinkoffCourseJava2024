@@ -14,7 +14,7 @@ import static edu.java.bot.utilities.CommandTestUtils.createMockUpdate;
 import static edu.java.bot.utilities.ResponseMessages.UNSUPPORTED_COMMAND;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MessageProcessorTest {
+class BotTextMessageProcessorTest {
 
     @Test
     @DisplayName("Processor incorrect command test")
@@ -27,8 +27,8 @@ class MessageProcessorTest {
                 new TrackCommand(),
                 new UntrackCommand()
             );
-        Processor processor = new MessageProcessor(commandsList);
-        SendMessage message = processor.process(mockUpdate);
+        BotMessageProcessor botMessageProcessor = new BotTextMessageProcessor(commandsList);
+        SendMessage message = botMessageProcessor.process(mockUpdate);
         assertThat(message.getParameters().get("text")).isEqualTo(UNSUPPORTED_COMMAND);
     }
 

@@ -28,12 +28,12 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         long chatId = getChatId(update);
-        if (update.message().text().equals(command())) {
-            // получение ссылок на отслеживаемые ресурсы
-            String sendMessage = buildListOfLinks(DUMMY_LINKS);
-            return new SendMessage(chatId, sendMessage).disableWebPagePreview(true);
+        if (!update.message().text().equals(command())) {
+            return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
         }
-        return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
+        // получение ссылок на отслеживаемые ресурсы
+        String sendMessage = buildListOfLinks(DUMMY_LINKS);
+        return new SendMessage(chatId, sendMessage).disableWebPagePreview(true);
     }
 
     private String buildListOfLinks(List<String> links) {

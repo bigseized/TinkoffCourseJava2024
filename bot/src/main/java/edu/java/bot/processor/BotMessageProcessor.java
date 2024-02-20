@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface Processor {
+public interface BotMessageProcessor {
     SendMessage process(Update update);
-    //SendMessage check(Update update);
 }
