@@ -65,11 +65,8 @@ public class StackOverflowClientTest {
                 .withBody(TEST_JSON)));
 
         StackOverflowClient stackOverflowClient = new StackOverflowClient();
-
         Mono<StackOverflowQuestionDTO> response = stackOverflowClient.fetchQuestionsInfo(TEST_LINK);
-
         StackOverflowQuestionDTO responseData = response.block();
-
         assertEquals(responseData, resultDTO);
     }
 

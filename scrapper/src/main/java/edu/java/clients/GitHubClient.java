@@ -21,7 +21,6 @@ public class GitHubClient {
     }
 
     Mono<GitHubReposDTO> fetchReposInfo(String link) {
-
         return webClient.get()
             .uri(parse(link))
             .retrieve()

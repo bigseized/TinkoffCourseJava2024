@@ -53,11 +53,8 @@ public class GitHubClientTest {
                 .withBody(TEST_JSON)));
 
         GitHubClient gitHubClient = new GitHubClient();
-
         Mono<GitHubReposDTO> response = gitHubClient.fetchReposInfo(TEST_LINK);
-
         GitHubReposDTO responseData = response.block();
-
         assertEquals(responseData, resultDTO);
     }
 }
