@@ -52,7 +52,7 @@ public class GitHubClientTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(TEST_JSON)));
 
-        GitHubClient gitHubClient = new GitHubClient();
+        GitHubClient gitHubClient = new GitHubClient(wireMockServer.baseUrl());
         Mono<GitHubReposDTO> response = gitHubClient.fetchReposInfo(TEST_LINK);
         GitHubReposDTO responseData = response.block();
         assertEquals(responseData, resultDTO);

@@ -19,9 +19,10 @@ public class StackOverflowClientTest {
 
     private WireMockServer wireMockServer;
     private StackOverflowQuestionDTO resultDTO;
+    private static final OffsetDateTime TEST_UPDATE_TIME = OffsetDateTime.parse("2024-01-23T14:58:43Z");
+    private static final Integer TEST_ID = 11227809;
     private static final String TEST_LINK =
         "https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster-than-processing-an-unsorted-array";
-    private static final OffsetDateTime TEST_UPDATE_TIME = OffsetDateTime.parse("2024-01-23T14:58:43Z");
     public static final String TEST_QUESTION =
         "Why is processing a sorted array faster than processing an unsorted array?";
     private static final String TEST_JSON = """
@@ -58,13 +59,13 @@ public class StackOverflowClientTest {
     @Test
     @DisplayName("Получение информации о вопросе (StackOverflowAPI)")
     public void stackOverflowTestDataFetch() {
-        stubFor(get(urlEqualTo("/questions/" + TEST_LINK + "/?site=stackoverflow"))
+        stubFor(get(urlEqualTo("/questions/" + TEST_ID + "/?site=stackoverflow"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody(TEST_JSON)));
 
-        StackOverflowClient stackOverflowClient = new StackOverflowClient();
+        StackOverflowClient stackOverflowClient = new StackOverflowClient(wireMockServer.baseUrl());
         Mono<StackOverflowQuestionDTO> response = stackOverflowClient.fetchQuestionsInfo(TEST_LINK);
         StackOverflowQuestionDTO responseData = response.block();
         assertEquals(responseData, resultDTO);
