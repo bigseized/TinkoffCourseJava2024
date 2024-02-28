@@ -3,12 +3,12 @@ package edu.java.clients;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import edu.java.dto.StackOverflowQuestionDTO;
+import edu.java.repository.api.stack_overflow.StackOverflowClient;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -66,9 +66,8 @@ public class StackOverflowClientTest {
                 .withBody(TEST_JSON)));
 
         StackOverflowClient stackOverflowClient = new StackOverflowClient(wireMockServer.baseUrl());
-        Mono<StackOverflowQuestionDTO> response = stackOverflowClient.fetchQuestionsInfo(TEST_LINK);
-        StackOverflowQuestionDTO responseData = response.block();
-        assertEquals(responseData, resultDTO);
+        StackOverflowQuestionDTO response = stackOverflowClient.fetchQuestionsInfo(TEST_LINK);
+        assertEquals(response, resultDTO);
     }
 
 }

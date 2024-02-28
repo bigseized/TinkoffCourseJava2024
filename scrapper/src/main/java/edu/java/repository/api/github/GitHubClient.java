@@ -1,12 +1,9 @@
-package edu.java.clients;
+package edu.java.repository.api.github;
 
 import edu.java.dto.GitHubReposDTO;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import static edu.java.parsers.GitHubLinkParse.parse;
+import static edu.java.parsers.LinkParseUtil.parseGitHub;
 
-@Component
 public class GitHubClient {
 
     private final WebClient webClient;
@@ -20,10 +17,11 @@ public class GitHubClient {
         webClient = WebClient.create(baseUrl);
     }
 
-    Mono<GitHubReposDTO> fetchReposInfo(String link) {
+    public GitHubReposDTO fetchReposInfo(String link) {
         return webClient.get()
-            .uri(parse(link))
+            .uri(parseGitHub(link))
             .retrieve()
-            .bodyToMono(GitHubReposDTO.class);
+            .bodyToMono(GitHubReposDTO.class)
+            .block();
     }
 }

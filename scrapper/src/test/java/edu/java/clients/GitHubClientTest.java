@@ -3,12 +3,12 @@ package edu.java.clients;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import edu.java.dto.GitHubReposDTO;
+import edu.java.repository.api.github.GitHubClient;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -53,8 +53,7 @@ public class GitHubClientTest {
                 .withBody(TEST_JSON)));
 
         GitHubClient gitHubClient = new GitHubClient(wireMockServer.baseUrl());
-        Mono<GitHubReposDTO> response = gitHubClient.fetchReposInfo(TEST_LINK);
-        GitHubReposDTO responseData = response.block();
-        assertEquals(responseData, resultDTO);
+        GitHubReposDTO response = gitHubClient.fetchReposInfo(TEST_LINK);
+        assertEquals(response, resultDTO);
     }
 }
