@@ -1,4 +1,4 @@
-package edu.java.services.linksLogik;
+package edu.java.services.link;
 
 import edu.java.controllers.dto.request.RemoveLinkRequest;
 import edu.java.controllers.dto.response.LinkResponse;

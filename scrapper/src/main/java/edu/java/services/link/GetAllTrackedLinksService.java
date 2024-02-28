@@ -1,9 +1,9 @@
-package edu.java.services.linksLogik;
+package edu.java.services.link;
+
 
 import edu.java.controllers.dto.response.LinkResponse;
 import edu.java.controllers.dto.response.ListLinksResponse;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;

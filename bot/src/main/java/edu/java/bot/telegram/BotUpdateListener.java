@@ -1,11 +1,11 @@
-package edu.java.bot;
+package edu.java.bot.telegram;
 
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.commands.Command;
-import edu.java.bot.processor.BotMessageProcessor;
-import edu.java.bot.processor.BotTextMessageProcessor;
-import edu.java.bot.sender.BotTextMessageSender;
+import edu.java.bot.telegram.processor.BotMessageProcessor;
+import edu.java.bot.telegram.processor.BotTextMessageProcessor;
+import edu.java.bot.telegram.sender.BotTextMessageSender;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

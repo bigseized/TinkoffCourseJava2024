@@ -1,6 +1,6 @@
 package edu.java.controllers;
 
-import edu.java.services.chatsLogik.DeleteTelegramChatService;
+import edu.java.services.chat.DeleteTelegramChatService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +21,7 @@ public class TelegramChatsController {
 
     @DeleteMapping("/{id}")
     public void deleteTgChat(@Min(value = 0, message = "ID должен быть >= 0") @PathVariable long id) {
-        deleteTelegramChatService.validateChatId(id);
+        deleteTelegramChatService.deleteChat(id);
     }
 
 

@@ -1,4 +1,4 @@
-package edu.java.services;
+package edu.java.exceptions.handler;
 
 import edu.java.controllers.dto.response.ApiErrorResponse;
 import edu.java.exceptions.ChatNotFoundException;

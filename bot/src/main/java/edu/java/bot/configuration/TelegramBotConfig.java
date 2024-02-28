@@ -1,4 +1,4 @@
-package edu.java.bot;
+package edu.java.bot.configuration;
 
 import com.pengrad.telegrambot.TelegramBot;
 import edu.java.bot.configuration.ApplicationConfig;
