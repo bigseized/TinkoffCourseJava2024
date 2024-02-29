@@ -2,8 +2,8 @@ package edu.java.services.link;
 
 import edu.java.controllers.dto.request.RemoveLinkRequest;
 import edu.java.controllers.dto.response.LinkResponse;
-import java.net.URI;
 import edu.java.exceptions.LinkNotFoundException;
+import java.net.URI;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 

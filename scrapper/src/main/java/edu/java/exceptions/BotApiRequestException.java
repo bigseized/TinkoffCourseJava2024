@@ -1,9 +1,11 @@
 package edu.java.exceptions;
 
 import edu.java.controllers.dto.response.ApiErrorResponse;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Data
+@Getter
+@RequiredArgsConstructor
 public class BotApiRequestException extends RuntimeException {
     private final ApiErrorResponse apiErrorResponse;
 }

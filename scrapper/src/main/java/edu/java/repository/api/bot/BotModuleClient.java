@@ -31,7 +31,6 @@ public class BotModuleClient {
         WebClientAdapter adapter = WebClientAdapter.create(webClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
         service = factory.createClient(BotUpdateService.class);
-        updateBot(null);
     }
 
     public void updateBot(LinkUpdateRequest linkUpdateRequest) {
