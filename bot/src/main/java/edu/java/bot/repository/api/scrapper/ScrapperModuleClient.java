@@ -40,7 +40,7 @@ public class ScrapperModuleClient {
         try {
             service.postTgChat(id);
         } catch (ScrapperApiRequestException e) {
-            log.error(e.getApiErrorResponse().code() + e.getApiErrorResponse().exceptionMessage());
+            log.error(e.getShortErrorMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class ScrapperModuleClient {
         try {
             service.deleteTgChat(id);
         } catch (ScrapperApiRequestException e) {
-            log.error(e.getApiErrorResponse().code() + e.getApiErrorResponse().exceptionMessage());
+            log.error(e.getShortErrorMessage());
         }
     }
 
@@ -56,7 +56,7 @@ public class ScrapperModuleClient {
         try {
             return service.getLinks(id);
         } catch (ScrapperApiRequestException e) {
-            log.error(e.getApiErrorResponse().code() + e.getApiErrorResponse().exceptionMessage());
+            log.error(e.getShortErrorMessage());
         }
         return null;
     }
@@ -65,7 +65,7 @@ public class ScrapperModuleClient {
         try {
             return service.postLink(id, addLinkRequest);
         } catch (ScrapperApiRequestException e) {
-            log.error(e.getApiErrorResponse().code() + e.getApiErrorResponse().exceptionMessage());
+            log.error(e.getShortErrorMessage());
         }
         return null;
     }
@@ -74,7 +74,7 @@ public class ScrapperModuleClient {
         try {
             return service.deleteLink(id, removeLinkRequest);
         } catch (ScrapperApiRequestException e) {
-            log.error(e.getApiErrorResponse().code() + e.getApiErrorResponse().exceptionMessage());
+            log.error(e.getShortErrorMessage());
         }
         return null;
     }

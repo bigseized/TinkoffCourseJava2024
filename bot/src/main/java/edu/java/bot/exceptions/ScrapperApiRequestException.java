@@ -8,5 +8,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScrapperApiRequestException extends RuntimeException {
     private final ApiErrorResponse apiErrorResponse;
+
+    public String getShortErrorMessage() {
+        return "Status code: " + apiErrorResponse.code() + "; Message: " + apiErrorResponse.exceptionMessage();
+    }
 }
 

@@ -1,7 +1,9 @@
 package edu.java.exceptions.handler;
 
 import edu.java.controllers.dto.response.ApiErrorResponse;
+import edu.java.exceptions.ChatAlreadyRegisteredException;
 import edu.java.exceptions.ChatNotFoundException;
+import edu.java.exceptions.LinkAlreadyRegisteredException;
 import edu.java.exceptions.LinkNotFoundException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -51,6 +53,34 @@ public class ScrapperExceptionHandler {
             .description(LinkNotFoundException.DESCRIPTION)
             .code(String.valueOf(HttpStatus.NOT_FOUND.value()))
             .exceptionName(HttpStatus.NOT_FOUND.name())
+            .exceptionMessage(exception.getMessage())
+            .stackTrace(Arrays.stream(exception.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toList())
+            .build();
+    }
+
+    @ExceptionHandler(value = ChatAlreadyRegisteredException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse chatAlreadyExist(ChatAlreadyRegisteredException exception) {
+        return ApiErrorResponse.builder()
+            .description(ChatAlreadyRegisteredException.DESCRIPTION)
+            .code(String.valueOf(HttpStatus.CONFLICT.value()))
+            .exceptionName(HttpStatus.CONFLICT.name())
+            .exceptionMessage(exception.getMessage())
+            .stackTrace(Arrays.stream(exception.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toList())
+            .build();
+    }
+
+    @ExceptionHandler(value = LinkAlreadyRegisteredException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse chatAlreadyExist(LinkAlreadyRegisteredException exception) {
+        return ApiErrorResponse.builder()
+            .description(LinkAlreadyRegisteredException.DESCRIPTION)
+            .code(String.valueOf(HttpStatus.CONFLICT.value()))
+            .exceptionName(HttpStatus.CONFLICT.name())
             .exceptionMessage(exception.getMessage())
             .stackTrace(Arrays.stream(exception.getStackTrace())
                 .map(StackTraceElement::toString)

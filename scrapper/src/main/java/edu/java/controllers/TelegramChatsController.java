@@ -1,5 +1,6 @@
 package edu.java.controllers;
 
+import edu.java.services.chat.AddTelegramChatService;
 import edu.java.services.chat.DeleteTelegramChatService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TelegramChatsController {
     private final DeleteTelegramChatService deleteTelegramChatService;
+    private final AddTelegramChatService addTelegramChatService;
 
     @PostMapping("/{id}")
     public void postTgChat(@Min(value = 0, message = "ID должен быть >= 0") @PathVariable long id) {
+        addTelegramChatService.addChat(id);
     }
 
     @DeleteMapping("/{id}")
