@@ -11,7 +11,7 @@ import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
-public interface ScrapperModuleService {
+public interface ScrapperApi {
     @PostExchange("/tg-chat/{id}")
     void postTgChat(@PathVariable long id);
 
@@ -32,7 +32,6 @@ public interface ScrapperModuleService {
         @RequestHeader("Tg-Chat-Id") long tgChatId,
         @RequestBody RemoveLinkRequest removeLinkRequest
     );
-
 }
 
 

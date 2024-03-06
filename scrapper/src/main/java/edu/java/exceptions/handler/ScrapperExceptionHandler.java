@@ -1,14 +1,12 @@
 package edu.java.exceptions.handler;
 
 import edu.java.controllers.dto.response.ApiErrorResponse;
-import edu.java.exceptions.ChatAlreadyRegisteredException;
-import edu.java.exceptions.ChatNotFoundException;
-import edu.java.exceptions.LinkAlreadyRegisteredException;
-import edu.java.exceptions.LinkNotFoundException;
+import edu.java.exceptions.ApiErrorResponseException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,59 +30,8 @@ public class ScrapperExceptionHandler {
             .build();
     }
 
-    @ExceptionHandler(value = ChatNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse chatNotFound(ChatNotFoundException exception) {
-        return ApiErrorResponse.builder()
-            .description(ChatNotFoundException.DESCRIPTION)
-            .code(String.valueOf(HttpStatus.NOT_FOUND.value()))
-            .exceptionName(HttpStatus.NOT_FOUND.name())
-            .exceptionMessage(exception.getMessage())
-            .stackTrace(Arrays.stream(exception.getStackTrace())
-                .map(StackTraceElement::toString)
-                .toList())
-            .build();
-    }
-
-    @ExceptionHandler(value = LinkNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse linkNotFound(LinkNotFoundException exception) {
-        return ApiErrorResponse.builder()
-            .description(LinkNotFoundException.DESCRIPTION)
-            .code(String.valueOf(HttpStatus.NOT_FOUND.value()))
-            .exceptionName(HttpStatus.NOT_FOUND.name())
-            .exceptionMessage(exception.getMessage())
-            .stackTrace(Arrays.stream(exception.getStackTrace())
-                .map(StackTraceElement::toString)
-                .toList())
-            .build();
-    }
-
-    @ExceptionHandler(value = ChatAlreadyRegisteredException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiErrorResponse chatAlreadyExist(ChatAlreadyRegisteredException exception) {
-        return ApiErrorResponse.builder()
-            .description(ChatAlreadyRegisteredException.DESCRIPTION)
-            .code(String.valueOf(HttpStatus.CONFLICT.value()))
-            .exceptionName(HttpStatus.CONFLICT.name())
-            .exceptionMessage(exception.getMessage())
-            .stackTrace(Arrays.stream(exception.getStackTrace())
-                .map(StackTraceElement::toString)
-                .toList())
-            .build();
-    }
-
-    @ExceptionHandler(value = LinkAlreadyRegisteredException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiErrorResponse chatAlreadyExist(LinkAlreadyRegisteredException exception) {
-        return ApiErrorResponse.builder()
-            .description(LinkAlreadyRegisteredException.DESCRIPTION)
-            .code(String.valueOf(HttpStatus.CONFLICT.value()))
-            .exceptionName(HttpStatus.CONFLICT.name())
-            .exceptionMessage(exception.getMessage())
-            .stackTrace(Arrays.stream(exception.getStackTrace())
-                .map(StackTraceElement::toString)
-                .toList())
-            .build();
+    @ExceptionHandler(value = ApiErrorResponseException.class)
+    public ResponseEntity<ApiErrorResponse> apiException(ApiErrorResponseException exception) {
+        return new ResponseEntity<>(exception.toApiErrorResponse(exception), exception.getHttpStatus());
     }
 }

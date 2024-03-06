@@ -19,4 +19,4 @@ springdoc:
 
 clients:
   scrapper:
-    base-url: unset
+    base-url: http://localhost:8080
