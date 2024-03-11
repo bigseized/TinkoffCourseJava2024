@@ -9,10 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@SpringBootApplication(exclude = {
-    DataSourceAutoConfiguration.class,
-    DataSourceTransactionManagerAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class})
+@SpringBootApplication
 @EnableConfigurationProperties({ApplicationConfig.class, ClientsConfigurationProperties.class})
 public class ScrapperApplication {
     public static void main(String[] args) {

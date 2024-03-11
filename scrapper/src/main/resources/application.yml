@@ -21,3 +21,10 @@ springdoc:
 clients:
   bot:
     base-url: unset
+
+database:
+  postgresql:
+    url: unset
+    username: unset
+    password: unset
+    driver: unset
