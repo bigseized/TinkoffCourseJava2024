@@ -1,8 +1,8 @@
-package edu.java.bot;
+package edu.java.bot.telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import edu.java.bot.menu.CommandsMenu;
+import edu.java.bot.telegram.menu.CommandsMenu;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

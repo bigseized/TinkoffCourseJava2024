@@ -20,4 +20,4 @@ springdoc:
 
 clients:
   bot:
-    base-url: unset
+    base-url: http://localhost:8090

@@ -1,4 +1,4 @@
-package edu.java.bot.menu;
+package edu.java.bot.telegram.menu;
 
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SetMyCommands;

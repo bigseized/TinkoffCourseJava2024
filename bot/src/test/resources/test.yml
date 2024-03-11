@@ -1,15 +1,14 @@
 app:
-  scheduler:
-    enable: true
-    interval: 10000
-    force-check-delay: 10000
+  telegram-token: unset
 
 spring:
   application:
-    name: scrapper
+    name: bot
+  jackson:
+    time-zone: UTC
 
 server:
-  port: 8080
+  port: 8090
 
 logging:
   config: classpath:log4j2-plain.xml
@@ -19,5 +18,5 @@ springdoc:
     path: /swagger-ui
 
 clients:
-  bot:
-    base-url: unset
+  scrapper:
+    base-url: http://localhost:8080

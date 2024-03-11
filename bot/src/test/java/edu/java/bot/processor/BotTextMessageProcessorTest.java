@@ -8,6 +8,9 @@ import edu.java.bot.commands.StartCommand;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.commands.UntrackCommand;
 import java.util.List;
+
+import edu.java.bot.telegram.processor.BotMessageProcessor;
+import edu.java.bot.telegram.processor.BotTextMessageProcessor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static edu.java.bot.utilities.CommandTestUtils.createMockUpdate;

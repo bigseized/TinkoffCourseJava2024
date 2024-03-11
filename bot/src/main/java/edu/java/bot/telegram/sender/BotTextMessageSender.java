@@ -1,4 +1,4 @@
-package edu.java.bot.sender;
+package edu.java.bot.telegram.sender;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.ParseMode;
