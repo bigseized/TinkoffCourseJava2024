@@ -1,7 +1,7 @@
 package edu.java.clients.api.github;
 
+import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
-import edu.java.exceptions.clients.BotApiRequestException;
 import edu.java.exceptions.clients.GitHubApiRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,11 @@ public class GitHubClient {
         service = factory.createClient(GitHubApi.class);
     }
 
-    public GitHubReposDTO fetchReposInfo(String userName, String reposName) throws BotApiRequestException {
+    public GitHubReposDTO fetchReposInfo(String userName, String reposName) throws GitHubApiRequestException {
         return service.fetchReposInfo(userName, reposName);
+    }
+
+    public GitHubEventsDTO fetchEventInfo(String userName, String reposName) throws GitHubApiRequestException {
+        return service.fetchEventInfo(userName, reposName).getFirst();
     }
 }

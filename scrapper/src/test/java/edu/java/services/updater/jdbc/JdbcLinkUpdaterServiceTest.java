@@ -2,6 +2,7 @@ package edu.java.services.updater.jdbc;
 
 import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import lombok.Cleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -74,7 +74,10 @@ class JdbcLinkUpdaterServiceTest {
         gitHubReposDTO.setUpdateTime(OffsetDateTime.now());
         gitHubReposDTO.setReposName("RepositoryName");
 
+        GitHubEventsDTO gitHubEventsDTO = new GitHubEventsDTO();
+        gitHubEventsDTO.setType("default");
         when(gitHubApi.fetchReposInfo(anyString(), anyString())).thenReturn(gitHubReposDTO);
+        when(gitHubApi.fetchEventInfo(anyString(), anyString())).thenReturn(gitHubEventsDTO);
         jdbcLinkUpdaterService.update();
 
         verify(botClient, times(1)).updateBot(any());

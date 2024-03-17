@@ -3,6 +3,7 @@ package edu.java.services.updater.jdbc;
 import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
 import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
@@ -63,7 +64,9 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
             handleUpdateException(link, INVALID_LINK);
             return;
         }
-        handleUpdate(link, gitHubReposDTO.getUpdateTime(), gitHubReposDTO.getReposName());
+        GitHubEventsDTO eventsDTO = gitHubApi.fetchEventInfo(args[0], args[1]);
+        EventType eventType = EventType.resolve(eventsDTO.getType());
+        handleUpdate(link, gitHubReposDTO.getUpdateTime(), gitHubReposDTO.getReposName(), eventType);
     }
 
     private void processUpdateFromStackOverflowQuestion(Link link) {
@@ -79,25 +82,30 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
     }
 
     private void handleUpdateException(Link link, String message) {
-        botClient.updateBot(buildRequest(link, message));
+        botClient.updateBot(buildRequest(link, message, EventType.REMOVE));
         linkRepository.remove(link);
     }
 
-    private void handleUpdate(Link link, OffsetDateTime updateTime, String description) {
+    private void handleUpdate(Link link, OffsetDateTime updateTime, String description, EventType eventType) {
         var lastUpdate = OffsetDateTime.of(link.updatedAt().toLocalDateTime(), ZoneOffset.UTC);
         if (updateTime.isAfter(lastUpdate)) {
-            LinkUpdateRequest updateRequest = buildRequest(link, description);
+            LinkUpdateRequest updateRequest = buildRequest(link, description, eventType);
             botClient.updateBot(updateRequest);
         }
         linkRepository.updateTime(link);
     }
 
-    private LinkUpdateRequest buildRequest(Link link, String description) {
+    private void handleUpdate(Link link, OffsetDateTime updateTime, String description) {
+        handleUpdate(link, updateTime, description, EventType.DEFAULT);
+    }
+
+    private LinkUpdateRequest buildRequest(Link link, String description, EventType eventType) {
         List<Long> chatIds = getAllChatsByLink(link.id());
         return LinkUpdateRequest.builder()
             .id(link.id())
             .url(link.resource())
             .description(description)
+            .eventType(eventType)
             .tgChatIds(chatIds)
             .build();
     }
