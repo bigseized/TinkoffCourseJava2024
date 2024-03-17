@@ -2,8 +2,8 @@ package edu.java.clients;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import edu.java.dto.GitHubReposDTO;
-import edu.java.repository.api.github.GitHubClient;
+import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.github.dto.GitHubReposDTO;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +25,8 @@ public class GitHubClientTest {
     private static final String TEST_USER_NAME = "bigseized";
     private static final String TEST_REPOS_NAME = "Poetress";
     private static final String TEST_LINK = "https://github.com/bigseized/Poetress";
-    private static final String TEST_JSON = "{\"updated_at\": \"2023-08-01T19:20:49Z\"," +
-        "\"name\": \"Poetress\"}";
+    private static final String TEST_JSON = "{\"pushed_at\": \"2023-08-01T19:20:49Z\"," +
+                                            "\"name\": \"Poetress\"}";
 
     @BeforeEach
     public void setup() {
@@ -53,7 +53,7 @@ public class GitHubClientTest {
                 .withBody(TEST_JSON)));
 
         GitHubClient gitHubClient = new GitHubClient(wireMockServer.baseUrl());
-        GitHubReposDTO response = gitHubClient.fetchReposInfo(TEST_LINK);
-        assertEquals(response, resultDTO);
+        GitHubReposDTO response = gitHubClient.fetchReposInfo(TEST_USER_NAME, TEST_REPOS_NAME);
+        assertEquals(resultDTO, response);
     }
 }

@@ -9,8 +9,18 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(value = "clients", ignoreUnknownFields = false)
 public record ClientsConfigurationProperties(
     @Validated
-    Bot bot
+    Bot bot,
+    @Validated
+    GitHub github,
+    @Validated
+    StackOverflow stackOverflow
 ) {
     public record Bot(@URL @NotNull String baseUrl) {
+    }
+
+    public record GitHub(@URL @NotNull String baseUrl) {
+    }
+
+    public record StackOverflow(@URL @NotNull String baseUrl) {
     }
 }

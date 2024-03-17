@@ -10,4 +10,8 @@
     <changeSet id="init_tables" author="bigseized">
         <sqlFile path="sql/08-03-2024-01-init-database-changelog.sql" relativeToChangelogFile="true"/>
     </changeSet>
+
+    <changeSet id="set_link_default_timestamp" author="bigseized">
+        <sqlFile path="sql/12-03-2024-01-default-timestamp-changelog.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>

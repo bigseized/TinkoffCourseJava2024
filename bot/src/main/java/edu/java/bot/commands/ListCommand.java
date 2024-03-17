@@ -2,18 +2,22 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.clients.api.scrapper.ScrapperClient;
 import edu.java.bot.utilities.ResponseMessages;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import static edu.java.bot.utilities.ResponseMessages.DEFAULT_INCORRECT_COMMAND;
-import static edu.java.bot.utilities.ResponseMessages.DUMMY_LINKS;
 import static edu.java.bot.utilities.ResponseMessages.LIST_COMMAND;
 import static edu.java.bot.utilities.ResponseMessages.LIST_DESCRIPTION;
+import static edu.java.bot.utilities.ResponseMessages.LIST_EMPTY;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class ListCommand implements Command {
+    private final ScrapperClient scrapperClient;
 
     @Override
     public String command() {
@@ -31,15 +35,23 @@ public class ListCommand implements Command {
         if (!update.message().text().equals(command())) {
             return new SendMessage(chatId, DEFAULT_INCORRECT_COMMAND);
         }
-        // получение ссылок на отслеживаемые ресурсы
-        String sendMessage = buildListOfLinks(DUMMY_LINKS);
+        List<String> listLink =
+            scrapperClient.getLinks(chatId).links()
+                .stream()
+                .map(link -> link.url().toString())
+                .toList();
+
+        if (listLink.isEmpty()) {
+            return new SendMessage(chatId, LIST_EMPTY);
+        }
+        String sendMessage = buildListOfLinks(listLink);
         return new SendMessage(chatId, sendMessage).disableWebPagePreview(true);
     }
 
     private String buildListOfLinks(List<String> links) {
         return ResponseMessages.LIST_TITLE
-            + IntStream.range(1, links.size() + 1)
-                .mapToObj(index -> "*" + index + "*" + ": " + links.get(index - 1))
-                .collect(Collectors.joining("\n"));
+               + IntStream.range(1, links.size() + 1)
+                   .mapToObj(index -> "<b>" + index + "</b>" + ": " + links.get(index - 1))
+                   .collect(Collectors.joining("\n"));
     }
 }

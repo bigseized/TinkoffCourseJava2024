@@ -1,0 +1,2 @@
+ALTER TABLE link
+    ALTER COLUMN updated_at SET DEFAULT timezone('UTC'::text, CURRENT_TIMESTAMP);
