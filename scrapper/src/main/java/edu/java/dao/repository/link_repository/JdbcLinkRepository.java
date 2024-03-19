@@ -5,15 +5,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    @Transactional
     public Link add(Link link) {
         return jdbcTemplate.queryForObject(
             "INSERT INTO Link VALUES (default, ?, default) RETURNING *",
@@ -22,7 +19,6 @@ public class JdbcLinkRepository implements LinkRepository {
         );
     }
 
-    @Transactional
     public Link remove(Link link) {
         return jdbcTemplate.queryForObject(
             "DELETE FROM Link WHERE resource=? RETURNING *",
@@ -31,7 +27,6 @@ public class JdbcLinkRepository implements LinkRepository {
         );
     }
 
-    @Transactional
     public List<Link> findAll() {
         return jdbcTemplate.query("SELECT * FROM Link", new DataClassRowMapper<>(Link.class));
     }

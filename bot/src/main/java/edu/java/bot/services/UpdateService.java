@@ -26,12 +26,15 @@ public class UpdateService {
     private String buildMessage(URI link, String description, EventType eventType) {
         String eventMessage = switch (eventType) {
             case GITHUB_REPOS_PULL_REQUEST_REVIEW -> "К одному из PR прикреплен обзор!";
+            case GITHUB_REPOS_PULL_REQUEST_COMMENT -> "В PR появилось новое сообщение!";
+            case GITHUB_REPOS_PULL_REQUEST -> "Добавлен запрос на слияние!";
             case GITHUB_REPOS_PUSH -> "В одну из веток произошёл PUSH!";
             case REMOVE -> "Ссылка удалена!";
             case DEFAULT -> "Неопределено автоматически.";
         };
-        return ResponseMessages.LINK_UPDATE_TITLE + "\n"
-               + String.format("<b>Ссылка:</b> %s \n<b>Обновленный контент:</b> %s\n<b>Событие: %s</b>",
+        return
+            ResponseMessages.LINK_UPDATE_TITLE + "\n"
+            + String.format("<b>Ссылка:</b> %s \n<b>Обновленный контент:</b> %s\n<b>Событие: %s</b>",
             link.toString(),
             description,
             eventMessage

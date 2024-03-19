@@ -11,6 +11,7 @@ import edu.java.services.updater.LinkUpdater;
 import java.net.URI;
 import java.util.List;
 import lombok.SneakyThrows;
+import org.jooq.DSLContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestPropertySource(properties = "spring.config.location=classpath:jdbcTest.yml")
-class JdbcRepositoryTest extends IntegrationEnvironment {
+class JooqRepositoryTest extends IntegrationEnvironment {
     @MockBean
     private LinkUpdater linkUpdater;
     @MockBean
@@ -43,10 +44,12 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
     private ChatLinkRepository associationRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private DSLContext dslContext;
 
     @DynamicPropertySource
     static void jdbcProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.database-access-type", () -> "jdbc");
+        registry.add("app.database-access-type", () -> "jooq");
     }
 
     private static final URI TEST_LINK = URI.create("test.com");
@@ -278,3 +281,4 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
         );
     }
 }
+

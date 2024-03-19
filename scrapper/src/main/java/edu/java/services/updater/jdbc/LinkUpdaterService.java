@@ -22,12 +22,13 @@ import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class JdbcLinkUpdaterService implements LinkUpdater {
+public class LinkUpdaterService implements LinkUpdater {
     public static final String INVALID_LINK = "Отслеживание ссылки прекращено. Причина: невалидная ссылка.";
     private final LinkRepository linkRepository;
     private final ChatLinkRepository associationRepository;
@@ -61,12 +62,21 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
         try {
             gitHubReposDTO = gitHubApi.fetchReposInfo(args[0], args[1]);
         } catch (GitHubApiRequestException e) {
-            handleUpdateException(link, INVALID_LINK);
+            handleUpdateException(link, INVALID_LINK, e.getHttpStatus());
             return;
         }
-        GitHubEventsDTO eventsDTO = gitHubApi.fetchEventInfo(args[0], args[1]);
-        EventType eventType = EventType.resolve(eventsDTO.getType());
-        handleUpdate(link, gitHubReposDTO.getUpdateTime(), gitHubReposDTO.getReposName(), eventType);
+        handleUpdateGitHub(link, gitHubReposDTO.getUpdateTime(), gitHubReposDTO.getReposName(), args);
+    }
+
+    private void handleUpdateGitHub(Link link, OffsetDateTime updateTime, String description, String[] args) {
+        var lastUpdate = OffsetDateTime.of(link.updatedAt().toLocalDateTime(), ZoneOffset.UTC);
+        if (updateTime.isAfter(lastUpdate)) {
+            GitHubEventsDTO eventsDTO = gitHubApi.fetchEventInfo(args[0], args[1]);
+            EventType eventType = EventType.resolve(eventsDTO.getType());
+            LinkUpdateRequest updateRequest = buildRequest(link, description, eventType);
+            botClient.updateBot(updateRequest);
+        }
+        linkRepository.updateTime(link);
     }
 
     private void processUpdateFromStackOverflowQuestion(Link link) {
@@ -75,15 +85,14 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
             dto = stackOverflowApi.fetchQuestionsInfo(LinkParseUtil.parseStackOverflowQuestion(link.resource()
                 .toString()));
         } catch (StackOverflowApiRequestException e) {
-            handleUpdateException(link, INVALID_LINK);
+            handleUpdateException(link, INVALID_LINK, e.getHttpStatus());
             return;
         }
         handleUpdate(link, dto.getUpdateTime(), dto.getQuestionText());
     }
 
-    private void handleUpdateException(Link link, String message) {
-        botClient.updateBot(buildRequest(link, message, EventType.REMOVE));
-        linkRepository.remove(link);
+    private void handleUpdate(Link link, OffsetDateTime updateTime, String description) {
+        handleUpdate(link, updateTime, description, EventType.DEFAULT);
     }
 
     private void handleUpdate(Link link, OffsetDateTime updateTime, String description, EventType eventType) {
@@ -95,8 +104,11 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
         linkRepository.updateTime(link);
     }
 
-    private void handleUpdate(Link link, OffsetDateTime updateTime, String description) {
-        handleUpdate(link, updateTime, description, EventType.DEFAULT);
+    private void handleUpdateException(Link link, String message, HttpStatus httpStatus) {
+        botClient.updateBot(buildRequest(link, message, EventType.REMOVE));
+        if (httpStatus.equals(HttpStatus.NOT_FOUND)) {
+            linkRepository.remove(link);
+        }
     }
 
     private LinkUpdateRequest buildRequest(Link link, String description, EventType eventType) {

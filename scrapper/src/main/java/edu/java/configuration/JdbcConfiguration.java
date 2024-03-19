@@ -1,36 +1,32 @@
 package edu.java.configuration;
 
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Value;
+import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
+import edu.java.dao.repository.chat_link_repository.JdbcChatLinkRepository;
+import edu.java.dao.repository.chat_repository.JdbcTgChatRepository;
+import edu.java.dao.repository.chat_repository.TgChatRepository;
+import edu.java.dao.repository.link_repository.JdbcLinkRepository;
+import edu.java.dao.repository.link_repository.LinkRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
 public class JdbcConfiguration {
-    @Value("${database.postgresql.driver}")
-    private String driver;
-    @Value("${database.postgresql.url}")
-    private String url;
-    @Value("${database.postgresql.username}")
-    private String username;
-    @Value("${database.postgresql.password}")
-    private String password;
-
     @Bean
-    public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driver);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        return dataSource;
+    public TgChatRepository jdbcChatRepository(JdbcTemplate jdbcTemplate) {
+        return new JdbcTgChatRepository(jdbcTemplate);
     }
 
     @Bean
-    public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
+    public LinkRepository jdbcLinkRepository(JdbcTemplate jdbcTemplate) {
+        return new JdbcLinkRepository(jdbcTemplate);
+    }
+
+    @Bean
+    public ChatLinkRepository jdbcChatLinkRepository(JdbcTemplate jdbcTemplate) {
+        return new JdbcChatLinkRepository(jdbcTemplate);
     }
 
 }

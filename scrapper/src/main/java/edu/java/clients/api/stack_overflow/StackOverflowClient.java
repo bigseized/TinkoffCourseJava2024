@@ -1,7 +1,6 @@
 package edu.java.clients.api.stack_overflow;
 
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
-import edu.java.exceptions.clients.BotApiRequestException;
 import edu.java.exceptions.clients.StackOverflowApiRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -29,7 +28,7 @@ public class StackOverflowClient {
         service = factory.createClient(StackOverflowApi.class);
     }
 
-    public StackOverflowQuestionDTO fetchQuestionsInfo(String id) throws BotApiRequestException {
+    public StackOverflowQuestionDTO fetchQuestionsInfo(String id) throws StackOverflowApiRequestException {
         return service.fetchQuestionsInfo(id).getItems().stream().findAny().orElse(null);
     }
 }

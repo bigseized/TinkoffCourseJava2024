@@ -32,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class JdbcLinkUpdaterServiceTest {
+class LinkUpdaterServiceTest {
     @Mock
     private LinkRepository linkRepository;
 
@@ -52,7 +52,7 @@ class JdbcLinkUpdaterServiceTest {
     private List<AbstractLinkResolver> resolvers;
 
     @InjectMocks
-    private JdbcLinkUpdaterService jdbcLinkUpdaterService;
+    private LinkUpdaterService jdbcLinkUpdaterService;
 
     @BeforeEach
     void setUp() {
