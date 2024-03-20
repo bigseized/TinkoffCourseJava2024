@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -59,13 +60,15 @@ public class StackOverflowClientTest {
     @Test
     @DisplayName("Получение информации о вопросе (StackOverflowAPI)")
     public void stackOverflowTestDataFetch() {
-        stubFor(get(urlEqualTo("/questions/" + TEST_ID + "/?site=stackoverflow"))
+        stubFor(get(urlEqualTo("/questions/" + TEST_ID + "/?site=stackoverflow&accessToken=test&key=test"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody(TEST_JSON)));
 
         StackOverflowClient stackOverflowClient = new StackOverflowClient(wireMockServer.baseUrl());
+        ReflectionTestUtils.setField(stackOverflowClient,"accessToken","test");
+        ReflectionTestUtils.setField(stackOverflowClient,"key","test");
         StackOverflowQuestionDTO response = stackOverflowClient.fetchQuestionsInfo(TEST_ID);
         assertEquals(response, resultDTO);
     }

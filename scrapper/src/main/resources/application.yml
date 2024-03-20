@@ -36,3 +36,6 @@ clients:
 
 authorization-tokens:
   github: unset
+  stack-overflow:
+    access-token: unset
+    key: unset

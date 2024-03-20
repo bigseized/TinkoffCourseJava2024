@@ -1,6 +1,7 @@
 package edu.java.dao.repository;
 
 import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
 import edu.java.dao.repository.chat_repository.TgChatRepository;
 import edu.java.dao.repository.entity.ChatLinkAssociationEntity;
@@ -36,6 +37,8 @@ class JooqRepositoryTest extends IntegrationEnvironment {
     private LinkUpdater linkUpdater;
     @MockBean
     private GitHubClient gitHubClient;
+    @MockBean
+    private StackOverflowClient stackOverflowClient;
     @Autowired
     private LinkRepository linkRepository;
     @Autowired
