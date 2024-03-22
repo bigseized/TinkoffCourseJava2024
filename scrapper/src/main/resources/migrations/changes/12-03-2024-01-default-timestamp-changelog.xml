@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="set_link_default_timestamp" author="bigseized">
+        <addDefaultValue tableName="link" columnName="updated_at"
+                         defaultValueComputed="timezone('UTC'::text, CURRENT_TIMESTAMP)"/>
+    </changeSet>
+</databaseChangeLog>
