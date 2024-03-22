@@ -3,10 +3,18 @@ app:
     enable: true
     interval: 10000
     force-check-delay: 10000
+  database-access-type: jooq
 
 spring:
   application:
     name: scrapper
+  datasource:
+    url: unset
+    username: unset
+    password: unset
+    driver-class-name: unset
+  jooq:
+    sql-dialect: postgres
 
 server:
   port: 8080
@@ -26,12 +34,8 @@ clients:
   stack-overflow:
     base-url: unset
 
-database:
-  postgresql:
-    url: unset
-    username: unset
-    password: unset
-    driver: unset
-
 authorization-tokens:
   github: unset
+  stack-overflow:
+    access-token: unset
+    key: unset

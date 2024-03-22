@@ -1,10 +1,12 @@
 package edu.java.bot.controllers;
 
+import edu.java.bot.services.UpdateService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -19,6 +21,9 @@ class BotControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    UpdateService updateService;
 
     private final static String TEST_CORRECT_BODY = """
         {

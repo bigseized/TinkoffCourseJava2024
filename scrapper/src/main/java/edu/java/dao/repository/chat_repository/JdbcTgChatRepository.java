@@ -3,9 +3,7 @@ package edu.java.dao.repository.chat_repository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcTgChatRepository implements TgChatRepository {
     private final JdbcTemplate jdbcTemplate;

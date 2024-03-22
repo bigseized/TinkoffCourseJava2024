@@ -6,6 +6,7 @@ on:
     paths:
       - .github/workflows/scrapper.yml
       - scrapper/**
+      - '!scrapper/src/main/java/edu/java/dao/repository/jooq/**'
 
 jobs:
   build:
