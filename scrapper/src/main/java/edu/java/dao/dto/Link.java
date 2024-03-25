@@ -1,4 +1,4 @@
-package edu.java.dao.repository.entity;
+package edu.java.dao.dto;
 
 import jakarta.annotation.Nullable;
 import java.net.URI;

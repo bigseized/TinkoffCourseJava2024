@@ -1,13 +1,12 @@
-package edu.java.services.link.jdbc;
+package edu.java.services.link;
 
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.exceptions.ChatNotFoundException;
 import edu.java.exceptions.LinkAlreadyRegisteredException;
 import edu.java.exceptions.LinkFormatUnsupportedException;
 import edu.java.exceptions.LinkNotFoundException;
-import edu.java.services.link.LinkService;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.LinkType;
 import jakarta.annotation.PostConstruct;
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcLinkService implements LinkService {
+public class LinkServiceImpl implements LinkService {
     private final LinkRepository linkRepository;
     private final ChatLinkRepository associationRepository;
     private final List<AbstractLinkResolver> resolvers;
@@ -54,7 +53,7 @@ public class JdbcLinkService implements LinkService {
     private void addAssociation(Long tgChatId, Link link) {
         try {
             associationRepository.add(link.id(), tgChatId);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException | ChatNotFoundException e) {
             throw new ChatNotFoundException("Не зарегистрированный чат не может быть связан со ссылкой");
         }
     }
@@ -65,7 +64,7 @@ public class JdbcLinkService implements LinkService {
         Link removedLink;
         try {
             removedLink = linkRepository.remove(new Link(null, url, null));
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | LinkNotFoundException e) {
             throw new LinkNotFoundException("Ссылка не закрепена за данным чатом");
         }
         return removedLink;

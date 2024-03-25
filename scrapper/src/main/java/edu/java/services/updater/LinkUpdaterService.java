@@ -1,4 +1,4 @@
-package edu.java.services.updater.jdbc;
+package edu.java.services.updater;
 
 import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
@@ -7,14 +7,13 @@ import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.exceptions.clients.GitHubApiRequestException;
 import edu.java.exceptions.clients.StackOverflowApiRequestException;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.LinkType;
-import edu.java.services.updater.LinkUpdater;
 import edu.java.utilities.LinkParseUtil;
 import jakarta.annotation.PostConstruct;
 import java.time.OffsetDateTime;

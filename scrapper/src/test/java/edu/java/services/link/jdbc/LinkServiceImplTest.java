@@ -2,9 +2,10 @@ package edu.java.services.link.jdbc;
 
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
 import edu.java.dao.repository.chat_link_repository.JdbcChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.link_repository.JdbcLinkRepository;
 import edu.java.dao.repository.link_repository.LinkRepository;
+import edu.java.services.link.LinkServiceImpl;
 import edu.java.services.link.LinkService;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.GitHubResolver;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class JdbcLinkServiceTest {
+class LinkServiceImplTest {
 
     private static final URI URL = create("www.google.com");
     private static final Link LINK = new Link(null, URL, null);
@@ -34,7 +35,7 @@ class JdbcLinkServiceTest {
         doReturn(LinkType.GITHUB_REPOS).when(gitHubResolver).checkLink(any());
         List<AbstractLinkResolver> abstractResolvers = List.of(gitHubResolver);
         doReturn(LINK).when(repository).add(LINK);
-        LinkService service = new JdbcLinkService(repository, chatLinkRepository, abstractResolvers);
+        LinkService service = new LinkServiceImpl(repository, chatLinkRepository, abstractResolvers);
         AbstractLinkResolver abstractLinkResolver = AbstractLinkResolver.makeChain(abstractResolvers);
         ReflectionTestUtils.setField(service, "abstractLinkResolver", abstractLinkResolver);
         service.add(chatId, URL);
@@ -49,7 +50,7 @@ class JdbcLinkServiceTest {
         GitHubResolver gitHubResolver = mock(GitHubResolver.class);
         List<AbstractLinkResolver> abstractResolvers = List.of(gitHubResolver);
         doReturn(LINK).when(repository).remove(LINK);
-        LinkService service = new JdbcLinkService(repository, chatLinkRepository, abstractResolvers);
+        LinkService service = new LinkServiceImpl(repository, chatLinkRepository, abstractResolvers);
 
         service.remove(chatId, URL);
         verify(repository, Mockito.times(1)).remove(LINK);
@@ -63,7 +64,7 @@ class JdbcLinkServiceTest {
         GitHubResolver gitHubResolver = mock(GitHubResolver.class);
         List<AbstractLinkResolver> abstractResolvers = List.of(gitHubResolver);
         doReturn(List.of(LINK)).when(chatLinkRepository).findLinksByChatId(chatId);
-        LinkService service = new JdbcLinkService(repository, chatLinkRepository, abstractResolvers);
+        LinkService service = new LinkServiceImpl(repository, chatLinkRepository, abstractResolvers);
 
         service.listAll(chatId);
         verify(chatLinkRepository, Mockito.times(1)).findLinksByChatId(chatId);

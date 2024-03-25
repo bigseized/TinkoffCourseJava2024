@@ -1,4 +1,4 @@
-package edu.java.services.updater.jdbc;
+package edu.java.services.updater;
 
 public enum EventType {
     GITHUB_REPOS_PULL_REQUEST_REVIEW("PullRequestReviewEvent"),

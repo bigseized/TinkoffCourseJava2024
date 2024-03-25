@@ -1,9 +1,8 @@
-package edu.java.services.chat.jdbc;
+package edu.java.services.chat;
 
 import edu.java.dao.repository.chat_repository.TgChatRepository;
 import edu.java.exceptions.ChatAlreadyRegisteredException;
 import edu.java.exceptions.ChatNotFoundException;
-import edu.java.services.chat.TgChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcChatService implements TgChatService {
+public class TgChatServiceImpl implements TgChatService {
     private final TgChatRepository chatRepository;
 
     @Override
@@ -20,7 +19,7 @@ public class JdbcChatService implements TgChatService {
     public void register(Long tgChatId) {
         try {
             chatRepository.add(tgChatId);
-        } catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException | ChatAlreadyRegisteredException e) {
             throw new ChatAlreadyRegisteredException("Повторная регистрация чата");
         }
     }
@@ -30,7 +29,7 @@ public class JdbcChatService implements TgChatService {
     public void unregister(Long tgChatId) {
         try {
             chatRepository.remove(tgChatId);
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | ChatNotFoundException e) {
             throw new ChatNotFoundException("Чат с данным ID не зарегистрирован");
         }
     }
