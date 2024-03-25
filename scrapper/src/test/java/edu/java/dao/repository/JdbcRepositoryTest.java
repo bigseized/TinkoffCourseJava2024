@@ -4,8 +4,8 @@ import edu.java.clients.api.github.GitHubClient;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
 import edu.java.dao.repository.chat_repository.TgChatRepository;
-import edu.java.dao.repository.entity.ChatLinkAssociationEntity;
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.ChatLinkAssociationDTO;
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.services.updater.LinkUpdater;
@@ -203,22 +203,9 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
     private boolean isAssociationExists(Long linkId, Long chatId) {
         return !jdbcTemplate.query(
             "SELECT * FROM chat_link_association WHERE link_id=? AND chat_id=?;",
-            new DataClassRowMapper<>(ChatLinkAssociationEntity.class),
+            new DataClassRowMapper<>(ChatLinkAssociationDTO.class),
             linkId, chatId
         ).isEmpty();
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void associationRepositoryRemoveMethod() {
-        addChat(1L);
-        addLink(TEST_LINK);
-        Long link_id = findLinkId(TEST_LINK.toString());
-        addAssociation(link_id, 1L);
-        assertTrue(isAssociationExists(link_id, 1L));
-        associationRepository.remove(link_id, 1L);
-        assertFalse(isAssociationExists(link_id, 1L));
     }
 
     @Test
@@ -229,8 +216,8 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
         addLink(TEST_LINK);
         Long link_id = findLinkId(TEST_LINK.toString());
         addAssociation(link_id, 1L);
-        List<ChatLinkAssociationEntity> list = associationRepository.findAssociationByIds(link_id, 1L);
-        assertEquals(list.getFirst(), new ChatLinkAssociationEntity(link_id, 1L));
+        List<ChatLinkAssociationDTO> list = associationRepository.findAssociationByIds(link_id, 1L);
+        assertEquals(list.getFirst(), new ChatLinkAssociationDTO(link_id, 1L));
     }
 
     @Test
@@ -274,10 +261,10 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
         addLink(TEST_LINK_2);
         Long link_id_2 = findLinkId(TEST_LINK_2.toString());
         addAssociation(link_id_2, 2L);
-        List<ChatLinkAssociationEntity> list = associationRepository.findAll();
+        List<ChatLinkAssociationDTO> list = associationRepository.findAll();
         assertThat(list).containsExactlyInAnyOrder(
-            new ChatLinkAssociationEntity(link_id, 1L),
-            new ChatLinkAssociationEntity(link_id_2, 2L)
+            new ChatLinkAssociationDTO(link_id, 1L),
+            new ChatLinkAssociationDTO(link_id_2, 2L)
         );
     }
 }

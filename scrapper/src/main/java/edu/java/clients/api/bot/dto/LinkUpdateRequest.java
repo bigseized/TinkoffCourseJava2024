@@ -1,6 +1,6 @@
 package edu.java.clients.api.bot.dto;
 
-import edu.java.services.updater.jdbc.EventType;
+import edu.java.services.updater.EventType;
 import java.net.URI;
 import java.util.List;
 import lombok.Builder;

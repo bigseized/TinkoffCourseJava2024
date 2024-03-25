@@ -7,7 +7,7 @@ import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.GitHubResolver;
@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import edu.java.services.updater.LinkUpdaterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
