@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaChatLinkRepositoryAdapter implements ChatLinkRepository {
@@ -56,6 +57,7 @@ public class JpaChatLinkRepositoryAdapter implements ChatLinkRepository {
     }
 
     @Override
+    @Transactional
     public List<Long> findChatsByLinkId(Long linkId) {
         LinkEntity linkEntity = linkRepository.findById(linkId).orElse(new LinkEntity());
         return linkEntity.chatEntities().stream().map(ChatEntity::id).toList();
