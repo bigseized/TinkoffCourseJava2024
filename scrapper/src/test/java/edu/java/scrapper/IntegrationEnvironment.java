@@ -43,5 +43,9 @@ public abstract class IntegrationEnvironment {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
+        registry.add("database.postgresql.url", POSTGRES::getJdbcUrl);
+        registry.add("database.postgresql.username", POSTGRES::getUsername);
+        registry.add("database.postgresql.password", POSTGRES::getPassword);
+        registry.add("database.postgresql.driver", POSTGRES::getDriverClassName);
     }
 }

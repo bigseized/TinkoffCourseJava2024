@@ -12,6 +12,6 @@ public class BotTextMessageSender {
     private final TelegramBot telegramBot;
 
     public void sendMessage(SendMessage message) {
-        telegramBot.execute(message.parseMode(ParseMode.Markdown));
+        telegramBot.execute(message.parseMode(ParseMode.HTML));
     }
 }

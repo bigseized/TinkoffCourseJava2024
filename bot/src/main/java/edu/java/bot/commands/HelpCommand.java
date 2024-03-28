@@ -4,12 +4,12 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import static edu.java.bot.utilities.ResponseMessages.DEFAULT_INCORRECT_COMMAND;
 import static edu.java.bot.utilities.ResponseMessages.HELP_COMMAND;
 import static edu.java.bot.utilities.ResponseMessages.HELP_DESCRIPTION;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class HelpCommand implements Command {
 

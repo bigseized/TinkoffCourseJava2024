@@ -4,10 +4,10 @@ import edu.java.controllers.dto.request.AddLinkRequest;
 import edu.java.controllers.dto.request.RemoveLinkRequest;
 import edu.java.controllers.dto.response.LinkResponse;
 import edu.java.controllers.dto.response.ListLinksResponse;
-import edu.java.services.link.AddLinkService;
-import edu.java.services.link.DeleteLinkService;
-import edu.java.services.link.GetAllTrackedLinksService;
+import edu.java.dao.repository.entity.Link;
+import edu.java.services.link.LinkService;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,15 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TelegramLinksController {
 
-    private final GetAllTrackedLinksService getAllTrackedLinksService;
-    private final AddLinkService addLinkService;
-    private final DeleteLinkService deleteLinkService;
+    private final LinkService linkService;
 
     @GetMapping
     public ListLinksResponse getLinks(
         @Validated @Min(value = 0, message = "ChatID должен быть >= 0") @RequestHeader("Tg-Chat-Id") long tgChatId
     ) {
-        return getAllTrackedLinksService.getAllTrackedLinks(tgChatId);
+        List<LinkResponse> list = linkService.listAll(tgChatId).stream()
+            .map(link -> new LinkResponse(link.id(), link.resource())).toList();
+        return new ListLinksResponse(list, list.size());
     }
 
     @PostMapping
@@ -39,7 +39,8 @@ public class TelegramLinksController {
         @Validated @Min(value = 0, message = "ChatID должен быть >= 0") @RequestHeader("Tg-Chat-Id") long tgChatId,
         @RequestBody AddLinkRequest addLinkRequest
     ) {
-        return addLinkService.addLink(tgChatId, addLinkRequest);
+        Link link = linkService.add(tgChatId, addLinkRequest.link());
+        return new LinkResponse(link.id(), link.resource());
     }
 
     @DeleteMapping
@@ -47,6 +48,7 @@ public class TelegramLinksController {
         @Validated @Min(value = 0, message = "ChatID должен быть >= 0") @RequestHeader("Tg-Chat-Id") long tgChatId,
         @RequestBody RemoveLinkRequest removeLinkRequest
     ) {
-        return deleteLinkService.deleteLink(tgChatId, removeLinkRequest);
+        Link link = linkService.remove(tgChatId, removeLinkRequest.link());
+        return new LinkResponse(link.id(), link.resource());
     }
 }
