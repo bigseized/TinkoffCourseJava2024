@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import lombok.Cleanup;
+import edu.java.services.updater.LinkUpdaterServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class JdbcLinkUpdaterServiceTest {
+class LinkUpdaterServiceImplTest {
     @Mock
     private LinkRepository linkRepository;
 
@@ -52,7 +52,7 @@ class JdbcLinkUpdaterServiceTest {
     private List<AbstractLinkResolver> resolvers;
 
     @InjectMocks
-    private JdbcLinkUpdaterService jdbcLinkUpdaterService;
+    private LinkUpdaterServiceImpl linkUpdaterServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -60,7 +60,7 @@ class JdbcLinkUpdaterServiceTest {
         resolvers = new ArrayList<>(Arrays.asList(new GitHubResolver(), new StackOverflowResolver()));
         AbstractLinkResolver resolver = AbstractLinkResolver.makeChain(resolvers);
         ReflectionTestUtils.setField(
-            jdbcLinkUpdaterService,
+            linkUpdaterServiceImpl,
             "abstractLinkResolver",
             resolver
         );
@@ -75,7 +75,7 @@ class JdbcLinkUpdaterServiceTest {
         gitHubReposDTO.setReposName("RepositoryName");
 
         when(gitHubApi.fetchReposInfo(anyString(), anyString())).thenReturn(gitHubReposDTO);
-        jdbcLinkUpdaterService.update();
+        linkUpdaterServiceImpl.update();
 
         verify(botClient, times(1)).updateBot(any());
         verify(linkRepository, times(1)).updateTime(link);
@@ -93,7 +93,7 @@ class JdbcLinkUpdaterServiceTest {
         stackOverflowQuestionDTO.setQuestionText("QuestionText");
         when(stackOverflowApi.fetchQuestionsInfo(anyString())).thenReturn(stackOverflowQuestionDTO);
 
-        jdbcLinkUpdaterService.update();
+        linkUpdaterServiceImpl.update();
 
         verify(botClient, times(1)).updateBot(any());
         verify(linkRepository, times(1)).updateTime(link);
@@ -105,7 +105,7 @@ class JdbcLinkUpdaterServiceTest {
 
         when(linkRepository.findAllNotUpdated()).thenReturn(Collections.singletonList(link));
 
-        jdbcLinkUpdaterService.update();
+        linkUpdaterServiceImpl.update();
 
         verify(botClient, never()).updateBot(any());
         verify(linkRepository, never()).updateTime(link);

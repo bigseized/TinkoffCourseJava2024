@@ -1,4 +1,4 @@
-package edu.java.services.updater.jdbc;
+package edu.java.services.updater;
 
 import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
@@ -13,20 +13,19 @@ import edu.java.exceptions.clients.GitHubApiRequestException;
 import edu.java.exceptions.clients.StackOverflowApiRequestException;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.LinkType;
-import edu.java.services.updater.LinkUpdater;
 import edu.java.utilities.LinkParseUtil;
-import jakarta.annotation.PostConstruct;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class JdbcLinkUpdaterService implements LinkUpdater {
+public class LinkUpdaterServiceImpl implements LinkUpdater {
     public static final String INVALID_LINK = "Отслеживание ссылки прекращено. Причина: невалидная ссылка.";
     private final LinkRepository linkRepository;
     private final ChatLinkRepository associationRepository;
@@ -34,9 +33,24 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
     private final GitHubClient gitHubApi;
     private final StackOverflowClient stackOverflowApi;
     private final BotClient botClient;
+    private final AbstractLinkResolver abstractLinkResolver;
 
-    private final List<AbstractLinkResolver> resolvers;
-    private AbstractLinkResolver abstractLinkResolver;
+    @Autowired
+    public LinkUpdaterServiceImpl(
+        LinkRepository linkRepository,
+        ChatLinkRepository associationRepository,
+        GitHubClient gitHubApi,
+        StackOverflowClient stackOverflowApi,
+        BotClient botClient,
+        List<AbstractLinkResolver> resolvers
+    ) {
+        this.linkRepository = linkRepository;
+        this.associationRepository = associationRepository;
+        this.gitHubApi = gitHubApi;
+        this.stackOverflowApi = stackOverflowApi;
+        this.botClient = botClient;
+        this.abstractLinkResolver = AbstractLinkResolver.makeChain(resolvers);
+    }
 
     @SuppressWarnings("checkstyle:MissingSwitchDefault")
     @Override
@@ -104,10 +118,5 @@ public class JdbcLinkUpdaterService implements LinkUpdater {
 
     private List<Long> getAllChatsByLink(Long linkId) {
         return associationRepository.findChatsByLinkId(linkId);
-    }
-
-    @PostConstruct
-    private void setupResolvers() {
-        abstractLinkResolver = AbstractLinkResolver.makeChain(resolvers);
     }
 }

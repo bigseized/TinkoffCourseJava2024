@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
@@ -13,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcLinkRepository implements LinkRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    @Transactional
-    public Link add(Link link) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Link save(Link link) {
         return jdbcTemplate.queryForObject(
             "INSERT INTO Link VALUES (default, ?, default) RETURNING *",
             new DataClassRowMapper<>(Link.class),
@@ -22,7 +23,7 @@ public class JdbcLinkRepository implements LinkRepository {
         );
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public Link remove(Link link) {
         return jdbcTemplate.queryForObject(
             "DELETE FROM Link WHERE resource=? RETURNING *",
@@ -31,12 +32,10 @@ public class JdbcLinkRepository implements LinkRepository {
         );
     }
 
-    @Transactional
     public List<Link> findAll() {
         return jdbcTemplate.query("SELECT * FROM Link", new DataClassRowMapper<>(Link.class));
     }
 
-    @Transactional
     public List<Link> findAllNotUpdated() {
         String sql = """
             SELECT *
@@ -46,6 +45,7 @@ public class JdbcLinkRepository implements LinkRepository {
         return jdbcTemplate.query(sql, new DataClassRowMapper<>(Link.class));
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updateTime(Link link) {
         jdbcTemplate.update("UPDATE link SET updated_at=default WHERE id=?;", link.id());
     }

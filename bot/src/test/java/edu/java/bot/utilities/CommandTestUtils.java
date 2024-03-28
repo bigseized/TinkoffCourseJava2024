@@ -59,7 +59,5 @@ public class CommandTestUtils {
         doNothing().when(scrapperClient).postTelegramChat(anyLong());
         doNothing().when(scrapperClient).deleteTelegramChat(anyLong());
         return scrapperClient;
-//        when(scrapperClient.deleteLinks(any(), any())).thenReturn(new LinkResponse(1, URI.create(DEFAULT_LINK)));
-//        when(scrapperClient.deleteTelegramChat(anyLong()))
     }
 }

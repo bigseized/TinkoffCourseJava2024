@@ -5,7 +5,7 @@ import edu.java.dao.repository.entity.Link;
 import java.util.List;
 
 public interface ChatLinkRepository {
-    void add(Long linkId, Long chatId);
+    void save(Long linkId, Long chatId);
 
     void remove(Long linkId, Long chatId);
 

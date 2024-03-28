@@ -49,11 +49,11 @@ public class ExceptionsInvokeTest {
     @Test
     @DisplayName("LinkFormatUnsupported invoke test")
     public void linkFormatUnsupportedException() {
-        doThrow(LinkFormatUnsupportedException.class)
+        doThrow(UnsupportedLinkFormatException.class)
             .when(linkService)
             .add(400L, LINK);
         assertThatThrownBy(() -> telegramLinksController.postLink(400L, new AddLinkRequest(LINK)))
-            .isInstanceOf(LinkFormatUnsupportedException.class);
+            .isInstanceOf(UnsupportedLinkFormatException.class);
     }
 
 

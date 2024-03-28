@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
@@ -14,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcChatLinkRepository implements ChatLinkRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public void add(Long linkId, Long chatId) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void save(Long linkId, Long chatId) {
         jdbcTemplate.update("INSERT INTO chat_link_association VALUES (?, ?)", linkId, chatId);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void remove(Long linkId, Long chatId) {
         jdbcTemplate.update("DELETE FROM chat_link_association WHERE link_id=? AND chat_id=?", linkId, chatId);
     }

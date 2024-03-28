@@ -49,7 +49,7 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     public void linkRepositoryAddMethod() {
-        linkRepository.add(new Link(null, TEST_LINK, null));
+        linkRepository.save(new Link(null, TEST_LINK, null));
         assertTrue(isLinkExists(TEST_LINK));
     }
 
@@ -131,7 +131,7 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
     @Transactional
     @Rollback
     public void chatRepositoryAddMethod() {
-        chatRepository.add(1L);
+        chatRepository.save(1L);
         assertTrue(isChatExists(1L));
     }
 
@@ -178,7 +178,7 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
         addChat(1L);
         addLink(TEST_LINK);
         Long link_id = findLinkId(TEST_LINK.toString());
-        associationRepository.add(link_id, 1L);
+        associationRepository.save(link_id, 1L);
         assertTrue(isAssociationExists(link_id, 1L));
     }
 

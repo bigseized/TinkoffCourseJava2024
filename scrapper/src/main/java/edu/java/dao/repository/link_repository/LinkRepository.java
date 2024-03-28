@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface LinkRepository {
 
-    Link add(Link link);
+    Link save(Link link);
 
     Link remove(Link link);
 
