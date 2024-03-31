@@ -4,6 +4,15 @@ app:
     interval: 10000
     force-check-delay: 10000
   database-access-type: jpa
+  retry:
+    max-attempts: 3
+    exceptions:
+      - java.lang.RuntimeException
+      - java.net.SocketException
+    backoff:
+      delay: 1000
+      max-delay: 5000
+      multiplier: 1
 
 spring:
   application:
@@ -15,6 +24,13 @@ spring:
     driver-class-name: unset
   jooq:
     sql-dialect: postgres
+  cache:
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=3600s
+    cache-names:
+      - rate-limit-bucket
 
 server:
   port: 8080
@@ -39,3 +55,20 @@ authorization-tokens:
   stack-overflow:
     access-token: unset
     key: unset
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-bucket
+      url: .*
+      http-status-code: too_many_requests
+      rate-limits:
+        - bandwidths:
+            - capacity: 10
+              time: 1
+              unit: minutes
+              refill-speed: interval
+          cache-key: getRemoteAddr()
+          skip-condition: '@bucket4jWhiteListService.isWhiteList(getRemoteAddr())'
+
+clients-whitelist: unset
