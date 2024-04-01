@@ -1,13 +1,14 @@
 package edu.java.dao.repository;
 
 import edu.java.clients.api.github.GitHubClient;
-import edu.java.dao.repository.chat_link_repository.JdbcChatLinkRepository;
-import edu.java.dao.repository.chat_repository.JdbcTgChatRepository;
-import edu.java.dao.repository.entity.ChatLinkAssociation;
+import edu.java.clients.api.stack_overflow.StackOverflowClient;
+import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
+import edu.java.dao.repository.chat_repository.TgChatRepository;
+import edu.java.dao.repository.entity.ChatLinkAssociationEntity;
 import edu.java.dao.repository.entity.Link;
-import edu.java.dao.repository.link_repository.JdbcLinkRepository;
+import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.scrapper.IntegrationEnvironment;
-import edu.java.services.updater.LinkUpdater;
+import edu.java.services.updater.LinkUpdaterSevice;
 import java.net.URI;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,17 +33,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestPropertySource(properties = "spring.config.location=classpath:jdbcTest.yml")
 class JdbcRepositoryTest extends IntegrationEnvironment {
     @MockBean
-    private LinkUpdater linkUpdater;
+    private LinkUpdaterSevice linkUpdaterSevice;
     @MockBean
     private GitHubClient gitHubClient;
+    @MockBean
+    private StackOverflowClient stackOverflowClient;
     @Autowired
-    private JdbcLinkRepository linkRepository;
+    private LinkRepository linkRepository;
     @Autowired
-    private JdbcTgChatRepository chatRepository;
+    private TgChatRepository chatRepository;
     @Autowired
-    private JdbcChatLinkRepository associationRepository;
+    private ChatLinkRepository associationRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @DynamicPropertySource
+    static void jdbcProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.database-access-type", () -> "jdbc");
+    }
 
     private static final URI TEST_LINK = URI.create("test.com");
     private static final URI TEST_LINK_2 = URI.create("test2.com");
@@ -193,7 +203,7 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
     private boolean isAssociationExists(Long linkId, Long chatId) {
         return !jdbcTemplate.query(
             "SELECT * FROM chat_link_association WHERE link_id=? AND chat_id=?;",
-            new DataClassRowMapper<>(ChatLinkAssociation.class),
+            new DataClassRowMapper<>(ChatLinkAssociationEntity.class),
             linkId, chatId
         ).isEmpty();
     }
@@ -219,8 +229,8 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
         addLink(TEST_LINK);
         Long link_id = findLinkId(TEST_LINK.toString());
         addAssociation(link_id, 1L);
-        List<ChatLinkAssociation> list = associationRepository.findAssociationByIds(link_id, 1L);
-        assertEquals(list.getFirst(), new ChatLinkAssociation(link_id, 1L));
+        List<ChatLinkAssociationEntity> list = associationRepository.findAssociationByIds(link_id, 1L);
+        assertEquals(list.getFirst(), new ChatLinkAssociationEntity(link_id, 1L));
     }
 
     @Test
@@ -264,10 +274,10 @@ class JdbcRepositoryTest extends IntegrationEnvironment {
         addLink(TEST_LINK_2);
         Long link_id_2 = findLinkId(TEST_LINK_2.toString());
         addAssociation(link_id_2, 2L);
-        List<ChatLinkAssociation> list = associationRepository.findAll();
+        List<ChatLinkAssociationEntity> list = associationRepository.findAll();
         assertThat(list).containsExactlyInAnyOrder(
-            new ChatLinkAssociation(link_id, 1L),
-            new ChatLinkAssociation(link_id_2, 2L)
+            new ChatLinkAssociationEntity(link_id, 1L),
+            new ChatLinkAssociationEntity(link_id_2, 2L)
         );
     }
 }

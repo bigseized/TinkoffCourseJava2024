@@ -1,10 +1,12 @@
 package edu.java.clients.api.github;
 
+import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
-import edu.java.exceptions.clients.BotApiRequestException;
 import edu.java.exceptions.clients.GitHubApiRequestException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +17,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class GitHubClient {
 
     private final GitHubApi service;
+    private final HttpHeaders authorizationHeader = new HttpHeaders();
     @Value("${authorization-tokens.github}")
     private String authToken;
 
@@ -28,7 +31,6 @@ public class GitHubClient {
                         (HttpStatus) responseEntity.getStatusCode()
                     ))
             )
-            .defaultHeader("Authorization", authToken)
             .baseUrl(baseUrl)
             .build();
         WebClientAdapter adapter = WebClientAdapter.create(webClient);
@@ -36,7 +38,16 @@ public class GitHubClient {
         service = factory.createClient(GitHubApi.class);
     }
 
-    public GitHubReposDTO fetchReposInfo(String userName, String reposName) throws BotApiRequestException {
-        return service.fetchReposInfo(userName, reposName);
+    @PostConstruct
+    private void setAuthorizationHeader() {
+        authorizationHeader.setBearerAuth(authToken);
+    }
+
+    public GitHubReposDTO fetchReposInfo(String userName, String reposName) throws GitHubApiRequestException {
+        return service.fetchReposInfo(userName, reposName, authorizationHeader);
+    }
+
+    public GitHubEventsDTO fetchEventInfo(String userName, String reposName) throws GitHubApiRequestException {
+        return service.fetchEventInfo(userName, reposName, authorizationHeader).getFirst();
     }
 }

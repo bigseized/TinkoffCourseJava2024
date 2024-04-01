@@ -3,6 +3,7 @@ package edu.java.services.updater;
 import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
 import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
@@ -14,18 +15,19 @@ import edu.java.exceptions.clients.StackOverflowApiRequestException;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.LinkType;
 import edu.java.utilities.LinkParseUtil;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class LinkUpdaterServiceImpl implements LinkUpdater {
+public class LinkUpdaterServiceImpl implements LinkUpdaterSevice {
     public static final String INVALID_LINK = "Отслеживание ссылки прекращено. Причина: невалидная ссылка.";
     private final LinkRepository linkRepository;
     private final ChatLinkRepository associationRepository;
@@ -37,12 +39,12 @@ public class LinkUpdaterServiceImpl implements LinkUpdater {
 
     @Autowired
     public LinkUpdaterServiceImpl(
-        LinkRepository linkRepository,
-        ChatLinkRepository associationRepository,
-        GitHubClient gitHubApi,
-        StackOverflowClient stackOverflowApi,
-        BotClient botClient,
-        List<AbstractLinkResolver> resolvers
+            LinkRepository linkRepository,
+            ChatLinkRepository associationRepository,
+            GitHubClient gitHubApi,
+            StackOverflowClient stackOverflowApi,
+            BotClient botClient,
+            List<AbstractLinkResolver> resolvers
     ) {
         this.linkRepository = linkRepository;
         this.associationRepository = associationRepository;
@@ -74,46 +76,64 @@ public class LinkUpdaterServiceImpl implements LinkUpdater {
         try {
             gitHubReposDTO = gitHubApi.fetchReposInfo(args[0], args[1]);
         } catch (GitHubApiRequestException e) {
-            handleUpdateException(link, INVALID_LINK);
+            handleUpdateException(link, INVALID_LINK, e.getHttpStatus());
             return;
         }
-        handleUpdate(link, gitHubReposDTO.getUpdateTime(), gitHubReposDTO.getReposName());
+        handleUpdateGitHub(link, gitHubReposDTO.getUpdateTime(), gitHubReposDTO.getReposName(), args);
+    }
+
+    private void handleUpdateGitHub(Link link, OffsetDateTime updateTime, String description, String[] args) {
+        var lastUpdate = OffsetDateTime.of(link.updatedAt().toLocalDateTime(), ZoneOffset.UTC);
+        if (updateTime.isAfter(lastUpdate)) {
+            GitHubEventsDTO eventsDTO = gitHubApi.fetchEventInfo(args[0], args[1]);
+            EventType eventType = EventType.resolve(eventsDTO.getType());
+            LinkUpdateRequest updateRequest = buildRequest(link, description, eventType);
+            botClient.updateBot(updateRequest);
+        }
+        linkRepository.updateTime(link);
     }
 
     private void processUpdateFromStackOverflowQuestion(Link link) {
         StackOverflowQuestionDTO dto;
         try {
             dto = stackOverflowApi.fetchQuestionsInfo(LinkParseUtil.parseStackOverflowQuestion(link.resource()
-                .toString()));
+                    .toString()));
         } catch (StackOverflowApiRequestException e) {
-            handleUpdateException(link, INVALID_LINK);
+            handleUpdateException(link, INVALID_LINK, e.getHttpStatus());
             return;
         }
         handleUpdate(link, dto.getUpdateTime(), dto.getQuestionText());
     }
 
-    private void handleUpdateException(Link link, String message) {
-        botClient.updateBot(buildRequest(link, message));
-        linkRepository.remove(link);
+    private void handleUpdate(Link link, OffsetDateTime updateTime, String description) {
+        handleUpdate(link, updateTime, description, EventType.DEFAULT);
     }
 
-    private void handleUpdate(Link link, OffsetDateTime updateTime, String description) {
+    private void handleUpdate(Link link, OffsetDateTime updateTime, String description, EventType eventType) {
         var lastUpdate = OffsetDateTime.of(link.updatedAt().toLocalDateTime(), ZoneOffset.UTC);
         if (updateTime.isAfter(lastUpdate)) {
-            LinkUpdateRequest updateRequest = buildRequest(link, description);
+            LinkUpdateRequest updateRequest = buildRequest(link, description, eventType);
             botClient.updateBot(updateRequest);
         }
         linkRepository.updateTime(link);
     }
 
-    private LinkUpdateRequest buildRequest(Link link, String description) {
+    private void handleUpdateException(Link link, String message, HttpStatus httpStatus) {
+        if (httpStatus.equals(HttpStatus.NOT_FOUND)) {
+            linkRepository.remove(link);
+            botClient.updateBot(buildRequest(link, message, EventType.REMOVE));
+        }
+    }
+
+    private LinkUpdateRequest buildRequest(Link link, String description, EventType eventType) {
         List<Long> chatIds = getAllChatsByLink(link.id());
         return LinkUpdateRequest.builder()
-            .id(link.id())
-            .url(link.resource())
-            .description(description)
-            .tgChatIds(chatIds)
-            .build();
+                .id(link.id())
+                .url(link.resource())
+                .description(description)
+                .eventType(eventType)
+                .tgChatIds(chatIds)
+                .build();
     }
 
     private List<Long> getAllChatsByLink(Long linkId) {

@@ -16,15 +16,28 @@ public class UpdateService {
 
     public void processUpdate(LinkUpdateRequest updateRequest) {
         List<Long> chatIds = updateRequest.tgChatIds();
-        String message = buildMessage(updateRequest.url(), updateRequest.description());
+        String message = buildMessage(updateRequest.url(), updateRequest.description(), updateRequest.eventType());
         for (var chatId : chatIds) {
             SendMessage sendMessage = new SendMessage(chatId, message);
             sender.sendMessage(sendMessage);
         }
     }
 
-    private String buildMessage(URI link, String description) {
-        return ResponseMessages.LINK_UPDATE_TITLE + "\n"
-               + String.format("<b>Ссылка:</b> %s \n<b>Обновленный контент:</b> %s", link.toString(), description);
+    private String buildMessage(URI link, String description, EventType eventType) {
+        String eventMessage = switch (eventType) {
+            case GITHUB_REPOS_PULL_REQUEST_REVIEW -> "К одному из PR прикреплен обзор!";
+            case GITHUB_REPOS_PULL_REQUEST_COMMENT -> "В PR появилось новое сообщение!";
+            case GITHUB_REPOS_PULL_REQUEST -> "Добавлен запрос на слияние!";
+            case GITHUB_REPOS_PUSH -> "В одну из веток произошёл PUSH!";
+            case REMOVE -> "Ссылка удалена!";
+            case DEFAULT -> "Неопределено автоматически.";
+        };
+        return
+            ResponseMessages.LINK_UPDATE_TITLE + "\n"
+            + String.format("<b>Ссылка:</b> %s \n<b>Обновленный контент:</b> %s\n<b>Событие: %s</b>",
+            link.toString(),
+            description,
+            eventMessage
+        );
     }
 }
