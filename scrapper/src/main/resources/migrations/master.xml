@@ -8,6 +8,9 @@
        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <changeSet id="init_tables" author="bigseized">
-        <sqlFile path="sql/08-03-2024-01-init-database-changelog.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="changes/08-03-2024-01-init-database-changelog.sql" relativeToChangelogFile="true"/>
     </changeSet>
+
+    <include file="changes/12-03-2024-01-default-timestamp-changelog.xml"/>
+
 </databaseChangeLog>
