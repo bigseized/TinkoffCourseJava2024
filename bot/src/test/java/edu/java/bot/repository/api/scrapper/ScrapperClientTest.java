@@ -1,9 +1,10 @@
 package edu.java.bot.repository.api.scrapper;
 
+import edu.java.bot.clients.api.scrapper.ScrapperClient;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import edu.java.bot.repository.api.scrapper.dto.response.LinkResponse;
-import edu.java.bot.repository.api.scrapper.dto.response.ListLinksResponse;
+import edu.java.bot.clients.api.scrapper.dto.response.LinkResponse;
+import edu.java.bot.clients.api.scrapper.dto.response.ListLinksResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

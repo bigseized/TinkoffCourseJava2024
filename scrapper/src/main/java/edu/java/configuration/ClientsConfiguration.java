@@ -1,6 +1,8 @@
 package edu.java.configuration;
 
-import edu.java.repository.api.bot.BotClient;
+import edu.java.clients.api.bot.BotClient;
+import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,17 @@ public class ClientsConfiguration {
     private final ClientsConfigurationProperties configurationProperties;
 
     @Bean
-    public BotClient scrapperClient() {
+    public BotClient botClient() {
         return new BotClient(configurationProperties.bot().baseUrl());
+    }
+
+    @Bean
+    public GitHubClient gitHubClientClass() {
+        return new GitHubClient(configurationProperties.github().baseUrl());
+    }
+
+    @Bean
+    public StackOverflowClient getStackOverflowClientClass() {
+        return new StackOverflowClient(configurationProperties.stackOverflow().baseUrl());
     }
 }

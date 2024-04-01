@@ -21,3 +21,17 @@ springdoc:
 clients:
   bot:
     base-url: unset
+  github:
+    base-url: unset
+  stack-overflow:
+    base-url: unset
+
+database:
+  postgresql:
+    url: unset
+    username: unset
+    password: unset
+    driver: unset
+
+authorization-tokens:
+  github: unset
