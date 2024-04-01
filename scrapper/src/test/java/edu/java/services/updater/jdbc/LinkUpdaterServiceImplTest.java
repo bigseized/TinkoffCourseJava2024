@@ -2,6 +2,7 @@ package edu.java.services.updater.jdbc;
 
 import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.github.GitHubClient;
+import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
@@ -11,6 +12,7 @@ import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.GitHubResolver;
 import edu.java.services.link_resolver.StackOverflowResolver;
+import edu.java.services.updater.LinkUpdaterServiceImpl;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import edu.java.services.updater.LinkUpdaterServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -74,7 +75,10 @@ class LinkUpdaterServiceImplTest {
         gitHubReposDTO.setUpdateTime(OffsetDateTime.now());
         gitHubReposDTO.setReposName("RepositoryName");
 
+        GitHubEventsDTO gitHubEventsDTO = new GitHubEventsDTO();
+        gitHubEventsDTO.setType("default");
         when(gitHubApi.fetchReposInfo(anyString(), anyString())).thenReturn(gitHubReposDTO);
+        when(gitHubApi.fetchEventInfo(anyString(), anyString())).thenReturn(gitHubEventsDTO);
         linkUpdaterServiceImpl.update();
 
         verify(botClient, times(1)).updateBot(any());

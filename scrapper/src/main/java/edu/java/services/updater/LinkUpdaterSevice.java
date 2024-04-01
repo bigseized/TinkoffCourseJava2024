@@ -1,5 +1,5 @@
 package edu.java.services.updater;
 
-public interface LinkUpdater {
+public interface LinkUpdaterSevice {
     void update();
 }

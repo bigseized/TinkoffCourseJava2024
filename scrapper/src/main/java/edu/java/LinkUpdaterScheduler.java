@@ -1,6 +1,6 @@
 package edu.java;
 
-import edu.java.services.updater.LinkUpdater;
+import edu.java.services.updater.LinkUpdaterSevice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @EnableScheduling
 public class LinkUpdaterScheduler {
-    private final LinkUpdater linkUpdater;
+    private final LinkUpdaterSevice linkUpdaterSevice;
 
     @Scheduled(fixedDelayString = "${app.scheduler.interval}")
     public void update() {
-        linkUpdater.update();
+        linkUpdaterSevice.update();
     }
 }
