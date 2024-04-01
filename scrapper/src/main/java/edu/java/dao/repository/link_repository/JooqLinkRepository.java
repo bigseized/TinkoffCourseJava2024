@@ -1,12 +1,12 @@
 package edu.java.dao.repository.link_repository;
 
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.Link;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.impl.SQLDataType;
 import org.springframework.transaction.annotation.Transactional;
-import static edu.java.dao.repository.jooq.Tables.LINK;
+import static edu.java.dao.jooq_generated.Tables.LINK;
 import static org.jooq.impl.DSL.defaultValue;
 import static org.jooq.impl.DSL.field;
 

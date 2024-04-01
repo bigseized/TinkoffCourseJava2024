@@ -3,7 +3,7 @@ package edu.java.dao.repository.chat_repository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import static edu.java.dao.repository.jooq.tables.Chat.CHAT;
+import static edu.java.dao.jooq_generated.tables.Chat.CHAT;
 
 @RequiredArgsConstructor
 public class JooqChatRepository implements TgChatRepository {

@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ChatServiceImpl implements TgChatService {
+
+public class TgChatServiceImpl implements TgChatService {
     private final TgChatRepository chatRepository;
 
     @Override
@@ -19,7 +20,7 @@ public class ChatServiceImpl implements TgChatService {
     public void register(Long tgChatId) {
         try {
             chatRepository.save(tgChatId);
-        } catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException | ChatAlreadyRegisteredException e) {
             throw new ChatAlreadyRegisteredException("Повторная регистрация чата");
         }
     }
@@ -29,7 +30,7 @@ public class ChatServiceImpl implements TgChatService {
     public void unregister(Long tgChatId) {
         try {
             chatRepository.remove(tgChatId);
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | ChatNotFoundException e) {
             throw new ChatNotFoundException("Чат с данным ID не зарегистрирован");
         }
     }

@@ -1,7 +1,7 @@
 package edu.java.services.link;
 
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.exceptions.ChatNotFoundException;
 import edu.java.exceptions.LinkAlreadyRegisteredException;
@@ -61,7 +61,7 @@ public class LinkServiceImpl implements LinkService {
     private void addAssociation(Long tgChatId, Link link) {
         try {
             associationRepository.save(link.id(), tgChatId);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException | ChatNotFoundException e) {
             throw new ChatNotFoundException("Не зарегистрированный чат не может быть связан со ссылкой");
         }
     }
@@ -72,7 +72,7 @@ public class LinkServiceImpl implements LinkService {
         Link removedLink;
         try {
             removedLink = linkRepository.remove(new Link(null, url, null));
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | LinkNotFoundException e) {
             throw new LinkNotFoundException("Ссылка не закрепена за данным чатом");
         }
         return removedLink;

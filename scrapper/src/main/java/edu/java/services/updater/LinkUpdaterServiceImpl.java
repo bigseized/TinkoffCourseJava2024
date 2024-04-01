@@ -7,22 +7,22 @@ import edu.java.clients.api.github.dto.GitHubEventsDTO;
 import edu.java.clients.api.github.dto.GitHubReposDTO;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
 import edu.java.clients.api.stack_overflow.dto.StackOverflowQuestionDTO;
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.exceptions.clients.GitHubApiRequestException;
 import edu.java.exceptions.clients.StackOverflowApiRequestException;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.LinkType;
 import edu.java.utilities.LinkParseUtil;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +39,12 @@ public class LinkUpdaterServiceImpl implements LinkUpdaterSevice {
 
     @Autowired
     public LinkUpdaterServiceImpl(
-            LinkRepository linkRepository,
-            ChatLinkRepository associationRepository,
-            GitHubClient gitHubApi,
-            StackOverflowClient stackOverflowApi,
-            BotClient botClient,
-            List<AbstractLinkResolver> resolvers
+        LinkRepository linkRepository,
+        ChatLinkRepository associationRepository,
+        GitHubClient gitHubApi,
+        StackOverflowClient stackOverflowApi,
+        BotClient botClient,
+        List<AbstractLinkResolver> resolvers
     ) {
         this.linkRepository = linkRepository;
         this.associationRepository = associationRepository;
@@ -97,7 +97,7 @@ public class LinkUpdaterServiceImpl implements LinkUpdaterSevice {
         StackOverflowQuestionDTO dto;
         try {
             dto = stackOverflowApi.fetchQuestionsInfo(LinkParseUtil.parseStackOverflowQuestion(link.resource()
-                    .toString()));
+                .toString()));
         } catch (StackOverflowApiRequestException e) {
             handleUpdateException(link, INVALID_LINK, e.getHttpStatus());
             return;
@@ -128,12 +128,12 @@ public class LinkUpdaterServiceImpl implements LinkUpdaterSevice {
     private LinkUpdateRequest buildRequest(Link link, String description, EventType eventType) {
         List<Long> chatIds = getAllChatsByLink(link.id());
         return LinkUpdateRequest.builder()
-                .id(link.id())
-                .url(link.resource())
-                .description(description)
-                .eventType(eventType)
-                .tgChatIds(chatIds)
-                .build();
+            .id(link.id())
+            .url(link.resource())
+            .description(description)
+            .eventType(eventType)
+            .tgChatIds(chatIds)
+            .build();
     }
 
     private List<Long> getAllChatsByLink(Long linkId) {

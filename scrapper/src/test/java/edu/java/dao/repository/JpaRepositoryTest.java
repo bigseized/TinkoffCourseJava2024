@@ -2,17 +2,17 @@ package edu.java.dao.repository;
 
 import edu.java.clients.api.github.GitHubClient;
 import edu.java.clients.api.stack_overflow.StackOverflowClient;
-import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
-import edu.java.dao.repository.chat_repository.TgChatRepository;
 import edu.java.dao.dto.ChatLinkAssociationDTO;
 import edu.java.dao.dto.Link;
+import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
+import edu.java.dao.repository.chat_repository.TgChatRepository;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.scrapper.IntegrationEnvironment;
 import edu.java.services.updater.LinkUpdaterSevice;
+import jakarta.persistence.EntityManager;
 import java.net.URI;
 import java.util.List;
 import lombok.SneakyThrows;
-import org.jooq.DSLContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,9 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestPropertySource(properties = "spring.config.location=classpath:jdbcTest.yml")
-class JooqRepositoryTest extends IntegrationEnvironment {
+class JpaRepositoryTest extends IntegrationEnvironment {
     @MockBean
-    private LinkUpdaterSevice linkUpdaterSevice;
+    private LinkUpdaterSevice linkUpdater;
     @MockBean
     private GitHubClient gitHubClient;
     @MockBean
@@ -48,11 +48,11 @@ class JooqRepositoryTest extends IntegrationEnvironment {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private DSLContext dslContext;
+    private EntityManager entityManager;
 
     @DynamicPropertySource
     static void jdbcProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.database-access-type", () -> "jooq");
+        registry.add("app.database-access-type", () -> "jpa");
     }
 
     private static final URI TEST_LINK = URI.create("test.com");
@@ -73,6 +73,7 @@ class JooqRepositoryTest extends IntegrationEnvironment {
         addLink(TEST_LINK);
         assertTrue(isLinkExists(TEST_LINK));
         linkRepository.remove(new Link(null, TEST_LINK, null));
+        entityManager.flush();
         assertFalse(isLinkExists(TEST_LINK));
     }
 
@@ -145,15 +146,8 @@ class JooqRepositoryTest extends IntegrationEnvironment {
     @Rollback
     public void chatRepositoryAddMethod() {
         chatRepository.save(1L);
+        entityManager.flush();
         assertTrue(isChatExists(1L));
-    }
-
-    private boolean isChatExists(Long id) {
-        return !jdbcTemplate.query(
-            "SELECT * FROM chat WHERE id=?",
-            (resultSet, i) -> resultSet.getLong(1),
-            id
-        ).isEmpty();
     }
 
     @Test
@@ -163,7 +157,16 @@ class JooqRepositoryTest extends IntegrationEnvironment {
         addChat(1L);
         assertTrue(isChatExists(1L));
         chatRepository.remove(1L);
+        entityManager.flush();
         assertFalse(isChatExists(1L));
+    }
+
+    private boolean isChatExists(Long id) {
+        return !jdbcTemplate.query(
+            "SELECT * FROM chat WHERE id=?",
+            (resultSet, i) -> resultSet.getLong(1),
+            id
+        ).isEmpty();
     }
 
     @SneakyThrows
@@ -192,6 +195,7 @@ class JooqRepositoryTest extends IntegrationEnvironment {
         addLink(TEST_LINK);
         Long link_id = findLinkId(TEST_LINK.toString());
         associationRepository.save(link_id, 1L);
+        entityManager.flush();
         assertTrue(isAssociationExists(link_id, 1L));
     }
 

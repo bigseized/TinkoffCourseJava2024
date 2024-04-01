@@ -1,7 +1,7 @@
 package edu.java.dao.repository.chat_link_repository;
 
-import edu.java.dao.repository.entity.ChatLinkAssociationEntity;
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.ChatLinkAssociationDTO;
+import edu.java.dao.dto.Link;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.DataClassRowMapper;
@@ -23,17 +23,17 @@ public class JdbcChatLinkRepository implements ChatLinkRepository {
         jdbcTemplate.update("DELETE FROM chat_link_association WHERE link_id=? AND chat_id=?", linkId, chatId);
     }
 
-    public List<ChatLinkAssociationEntity> findAll() {
+    public List<ChatLinkAssociationDTO> findAll() {
         return jdbcTemplate.query(
             "SELECT * FROM chat_link_association",
-            new DataClassRowMapper<>(ChatLinkAssociationEntity.class)
+            new DataClassRowMapper<>(ChatLinkAssociationDTO.class)
         );
     }
 
-    public List<ChatLinkAssociationEntity> findAssociationByIds(Long linkId, Long chatId) {
+    public List<ChatLinkAssociationDTO> findAssociationByIds(Long linkId, Long chatId) {
         return jdbcTemplate.query(
             "SELECT * FROM chat_link_association WHERE link_id = ? AND chat_id = ?",
-            new DataClassRowMapper<>(ChatLinkAssociationEntity.class),
+            new DataClassRowMapper<>(ChatLinkAssociationDTO.class),
             linkId,
             chatId
         );

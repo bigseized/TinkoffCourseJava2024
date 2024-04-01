@@ -4,7 +4,7 @@ import edu.java.controllers.dto.request.AddLinkRequest;
 import edu.java.controllers.dto.request.RemoveLinkRequest;
 import edu.java.controllers.dto.response.LinkResponse;
 import edu.java.controllers.dto.response.ListLinksResponse;
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.Link;
 import edu.java.services.link.LinkService;
 import jakarta.validation.constraints.Min;
 import java.util.List;

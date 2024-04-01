@@ -228,7 +228,7 @@
                     <version>${jacoco-maven-plugin.version}</version>
                     <configuration>
                         <excludes>
-                            <exclude>**/repository/jooq/**</exclude>
+                            <exclude>**/dao/jooq_generated/**</exclude>
                         </excludes>
                     </configuration>
                     <executions>

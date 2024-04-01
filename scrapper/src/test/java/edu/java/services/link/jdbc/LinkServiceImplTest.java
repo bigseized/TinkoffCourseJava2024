@@ -2,9 +2,10 @@ package edu.java.services.link.jdbc;
 
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
 import edu.java.dao.repository.chat_link_repository.JdbcChatLinkRepository;
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.Link;
 import edu.java.dao.repository.link_repository.JdbcLinkRepository;
 import edu.java.dao.repository.link_repository.LinkRepository;
+import edu.java.services.link.LinkServiceImpl;
 import edu.java.services.link.LinkService;
 import edu.java.services.link.LinkServiceImpl;
 import edu.java.services.link_resolver.AbstractLinkResolver;
