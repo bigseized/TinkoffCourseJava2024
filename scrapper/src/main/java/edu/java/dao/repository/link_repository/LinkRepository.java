@@ -1,6 +1,6 @@
 package edu.java.dao.repository.link_repository;
 
-import edu.java.dao.repository.entity.Link;
+import edu.java.dao.dto.Link;
 import java.util.List;
 
 public interface LinkRepository {
