@@ -53,3 +53,12 @@ bucket4j:
           skip-condition: '@bucket4jWhiteListService.isWhiteList(getRemoteAddr())'
 
 clients-whitelist: unset
+
+resilience4j:
+  retry:
+    instances:
+      basic:
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        max-attempts: 5
+        wait-duration: 1s
