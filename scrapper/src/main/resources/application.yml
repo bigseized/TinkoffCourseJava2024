@@ -4,15 +4,6 @@ app:
     interval: 10000
     force-check-delay: 10000
   database-access-type: jpa
-  retry:
-    max-attempts: 3
-    exceptions:
-      - java.lang.RuntimeException
-      - java.net.SocketException
-    backoff:
-      delay: 1000
-      max-delay: 5000
-      multiplier: 1
 
 spring:
   application:
