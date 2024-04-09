@@ -1,6 +1,5 @@
 package edu.java.services.updater;
 
-import edu.java.clients.api.bot.BotClient;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
 import edu.java.clients.api.github.GitHubClient;
 import edu.java.clients.api.github.dto.GitHubEventsDTO;
@@ -12,6 +11,7 @@ import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
 import edu.java.dao.repository.link_repository.LinkRepository;
 import edu.java.exceptions.clients.GitHubApiRequestException;
 import edu.java.exceptions.clients.StackOverflowApiRequestException;
+import edu.java.services.UpdatesSender;
 import edu.java.services.link_resolver.AbstractLinkResolver;
 import edu.java.services.link_resolver.LinkType;
 import edu.java.utilities.LinkParseUtil;
@@ -34,7 +34,7 @@ public class LinkUpdaterService implements LinkUpdater {
 
     private final GitHubClient gitHubApi;
     private final StackOverflowClient stackOverflowApi;
-    private final BotClient botClient;
+    private final UpdatesSender updatesSender;
 
     private final List<AbstractLinkResolver> resolvers;
     private AbstractLinkResolver abstractLinkResolver;
@@ -73,7 +73,7 @@ public class LinkUpdaterService implements LinkUpdater {
             GitHubEventsDTO eventsDTO = gitHubApi.fetchEventInfo(args[0], args[1]);
             EventType eventType = EventType.resolve(eventsDTO.getType());
             LinkUpdateRequest updateRequest = buildRequest(link, description, eventType);
-            botClient.updateBot(updateRequest);
+            updatesSender.updateBot(updateRequest);
         }
         linkRepository.updateTime(link);
     }
@@ -98,14 +98,14 @@ public class LinkUpdaterService implements LinkUpdater {
         var lastUpdate = OffsetDateTime.of(link.updatedAt().toLocalDateTime(), ZoneOffset.UTC);
         if (updateTime.isAfter(lastUpdate)) {
             LinkUpdateRequest updateRequest = buildRequest(link, description, eventType);
-            botClient.updateBot(updateRequest);
+            updatesSender.updateBot(updateRequest);
         }
         linkRepository.updateTime(link);
     }
 
     private void handleUpdateException(Link link, String message, HttpStatus httpStatus) {
         if (httpStatus.equals(HttpStatus.NOT_FOUND)) {
-            botClient.updateBot(buildRequest(link, message, EventType.REMOVE));
+            updatesSender.updateBot(buildRequest(link, message, EventType.REMOVE));
             linkRepository.remove(link);
         }
     }
