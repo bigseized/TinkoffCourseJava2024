@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(prefix = "bucket4j", name = "enabled", havingValue = "true")
 public class Bucket4jWhiteListService {
     @Value("${clients-whitelist}")
-    List<String> clientsWhitelist;
+    private List<String> clientsWhitelist;
 
     public boolean isWhiteList(String ipAddress) {
         return clientsWhitelist.contains(ipAddress);
