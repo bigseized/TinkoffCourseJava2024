@@ -7,6 +7,13 @@ app:
 spring:
   application:
     name: scrapper
+  cache:
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=3600s
+    cache-names:
+      - rate-limit-bucket
 
 server:
   port: 8080
@@ -33,3 +40,6 @@ database:
     username: unset
     password: unset
     driver: unset
+
+bucket4j:
+  enabled: false

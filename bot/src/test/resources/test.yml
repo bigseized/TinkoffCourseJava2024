@@ -6,6 +6,13 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  cache:
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=3600s
+    cache-names:
+      - rate-limit-bucket
 
 server:
   port: 8090
@@ -20,3 +27,6 @@ springdoc:
 clients:
   scrapper:
     base-url: http://localhost:8080
+
+bucket4j:
+  enabled: false
