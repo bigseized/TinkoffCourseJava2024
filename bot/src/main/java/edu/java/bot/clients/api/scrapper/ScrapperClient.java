@@ -6,6 +6,7 @@ import edu.java.bot.clients.api.scrapper.dto.response.LinkResponse;
 import edu.java.bot.clients.api.scrapper.dto.response.ListLinksResponse;
 import edu.java.bot.controllers.dto.response.ApiErrorResponse;
 import edu.java.bot.exceptions.ScrapperApiRequestException;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -34,22 +35,27 @@ public class ScrapperClient {
         service = factory.createClient(ScrapperApi.class);
     }
 
+    @Retry(name = "basic")
     public void postTelegramChat(long id) throws ScrapperApiRequestException {
         service.postTgChat(id);
     }
 
+    @Retry(name = "basic")
     public void deleteTelegramChat(long id) throws ScrapperApiRequestException {
         service.deleteTgChat(id);
     }
 
+    @Retry(name = "basic")
     public ListLinksResponse getLinks(long id) throws ScrapperApiRequestException {
         return service.getLinks(id);
     }
 
+    @Retry(name = "basic")
     public LinkResponse postLinks(long id, AddLinkRequest addLinkRequest) throws ScrapperApiRequestException {
         return service.postLink(id, addLinkRequest);
     }
 
+    @Retry(name = "basic")
     public LinkResponse deleteLinks(long id, RemoveLinkRequest removeLinkRequest) throws ScrapperApiRequestException {
         return service.deleteLink(id, removeLinkRequest);
     }

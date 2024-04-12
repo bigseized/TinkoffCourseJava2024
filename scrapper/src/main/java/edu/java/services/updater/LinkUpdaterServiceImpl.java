@@ -120,8 +120,8 @@ public class LinkUpdaterServiceImpl implements LinkUpdaterSevice {
 
     private void handleUpdateException(Link link, String message, HttpStatus httpStatus) {
         if (httpStatus.equals(HttpStatus.NOT_FOUND)) {
-            linkRepository.remove(link);
             botClient.updateBot(buildRequest(link, message, EventType.REMOVE));
+            linkRepository.remove(link);
         }
     }
 

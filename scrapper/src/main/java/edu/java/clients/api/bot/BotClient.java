@@ -3,6 +3,7 @@ package edu.java.clients.api.bot;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
 import edu.java.controllers.dto.response.ApiErrorResponse;
 import edu.java.exceptions.clients.BotApiRequestException;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,6 +32,7 @@ public class BotClient {
         service = factory.createClient(BotApi.class);
     }
 
+    @Retry(name = "basic")
     public void updateBot(LinkUpdateRequest linkUpdateRequest) throws BotApiRequestException {
         service.updateBot(linkUpdateRequest);
     }
