@@ -4,7 +4,7 @@ app:
     interval: 10000
     force-check-delay: 10000
   database-access-type: jpa
-  use-queue: true
+  use-queue: false
 
 kafka-config:
   bootstrap-servers: localhost:29091,localhost:29092
@@ -77,3 +77,18 @@ resilience4j:
         exponential-backoff-multiplier: 2
         max-attempts: 1
         wait-duration: 1s
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: info, health, prometheus
+      base-path:  /
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
