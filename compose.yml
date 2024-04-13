@@ -96,8 +96,6 @@ services:
       kafka-topics --bootstrap-server kafka1:9091,kafka2:9092 --list
       "
 
-
-
   grafana:
     image: grafana/grafana-oss
     ports:
