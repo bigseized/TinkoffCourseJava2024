@@ -4,6 +4,11 @@ app:
     interval: 10000
     force-check-delay: 10000
   database-access-type: jpa
+  use-queue: true
+
+kafka-config:
+  bootstrap-servers: localhost:29091,localhost:29092
+  updates-topic-name: updates
 
 spring:
   application:
@@ -48,7 +53,7 @@ authorization-tokens:
     key: unset
 
 bucket4j:
-  enabled: true
+  enabled: false
   filters:
     - cache-name: rate-limit-bucket
       url: .*
@@ -70,5 +75,5 @@ resilience4j:
       basic:
         enable-exponential-backoff: true
         exponential-backoff-multiplier: 2
-        max-attempts: 5
+        max-attempts: 1
         wait-duration: 1s

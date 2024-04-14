@@ -11,9 +11,9 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotNull
     Scheduler scheduler,
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+    Boolean useQueue
 ) {
-
     @Bean
     public Scheduler scheduler() {
         return scheduler;

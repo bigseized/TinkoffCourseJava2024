@@ -3,6 +3,7 @@ package edu.java.clients.api.bot;
 import edu.java.clients.api.bot.dto.LinkUpdateRequest;
 import edu.java.controllers.dto.response.ApiErrorResponse;
 import edu.java.exceptions.clients.BotApiRequestException;
+import edu.java.services.UpdatesSender;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Log4j2
-public class BotClient {
+public class BotClient implements UpdatesSender {
     private final BotApi service;
 
     public BotClient(String baseUrl) {

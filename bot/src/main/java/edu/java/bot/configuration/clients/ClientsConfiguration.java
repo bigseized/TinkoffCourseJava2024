@@ -1,4 +1,4 @@
-package edu.java.bot.configuration;
+package edu.java.bot.configuration.clients;
 
 import edu.java.bot.clients.api.scrapper.ScrapperClient;
 import lombok.RequiredArgsConstructor;

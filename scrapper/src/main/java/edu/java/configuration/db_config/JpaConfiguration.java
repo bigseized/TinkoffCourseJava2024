@@ -1,4 +1,4 @@
-package edu.java.configuration;
+package edu.java.configuration.db_config;
 
 import edu.java.dao.repository.chat_link_repository.ChatLinkRepository;
 import edu.java.dao.repository.chat_link_repository.JpaChatLinkRepositoryAdapter;

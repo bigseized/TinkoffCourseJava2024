@@ -1,4 +1,4 @@
-package edu.java.bot.configuration;
+package edu.java.configuration.clients;
 
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.URL;
@@ -9,8 +9,18 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(value = "clients", ignoreUnknownFields = false)
 public record ClientsConfigurationProperties(
     @Validated
-    Scrapper scrapper
+    Bot bot,
+    @Validated
+    GitHub github,
+    @Validated
+    StackOverflow stackOverflow
 ) {
-    public record Scrapper(@URL @NotNull String baseUrl) {
+    public record Bot(@URL @NotNull String baseUrl) {
+    }
+
+    public record GitHub(@URL @NotNull String baseUrl) {
+    }
+
+    public record StackOverflow(@URL @NotNull String baseUrl) {
     }
 }
