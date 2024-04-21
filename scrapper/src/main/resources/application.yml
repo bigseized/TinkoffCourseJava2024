@@ -4,15 +4,13 @@ app:
     interval: 10000
     force-check-delay: 10000
   database-access-type: jpa
-  use-queue: true
+  use-queue: false
 
 kafka-config:
   bootstrap-servers: unset
   updates-topic-name: updates
 
 spring:
-  profiles:
-    active: prod
   application:
     name: scrapper
   datasource:

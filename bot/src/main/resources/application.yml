@@ -2,8 +2,6 @@ app:
   telegram-token: unset
 
 spring:
-  profiles:
-    active: prod
   application:
     name: bot
   jackson:
@@ -22,7 +20,7 @@ server:
   port: 8090
 
 kafka-config:
-  enable: true
+  enable: false
   updates-topic-name: updates
 
 logging:
