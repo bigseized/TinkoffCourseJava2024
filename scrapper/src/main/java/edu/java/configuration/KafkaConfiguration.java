@@ -18,7 +18,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @ConditionalOnProperty(prefix = "app", name = "use-queue", havingValue = "true")
 public class KafkaConfiguration {
 
-    @Value("bootstrap-servers")
+    @Value("${kafka-config.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean

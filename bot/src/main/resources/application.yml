@@ -2,6 +2,8 @@ app:
   telegram-token: unset
 
 spring:
+  profiles:
+    active: prod
   application:
     name: bot
   jackson:
@@ -14,13 +16,13 @@ spring:
     cache-names:
       - rate-limit-bucket
   kafka:
-    bootstrap-servers: localhost:29091,localhost:29092
+    bootstrap-servers: unset
 
 server:
   port: 8090
 
 kafka-config:
-  enable: false
+  enable: true
   updates-topic-name: updates
 
 logging:
