@@ -7,7 +7,7 @@ app:
   use-queue: false
 
 kafka-config:
-  bootstrap-servers: localhost:29091,localhost:29092
+  bootstrap-servers: unset
   updates-topic-name: updates
 
 spring:

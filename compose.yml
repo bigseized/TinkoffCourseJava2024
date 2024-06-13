@@ -1,6 +1,35 @@
 services:
+  scrapper:
+    build: ./scrapper/
+    hostname: scrapper
+    container_name: scrapper
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - zookeeper
+      - init-kafka
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+      - applications
+      - kafka-network
+
+  bot:
+    build: ./bot/
+    hostname: bot
+    container_name: bot
+    depends_on:
+      - scrapper
+    ports:
+      - "8090:8090"
+    networks:
+      - applications
+      - kafka-network
+
   postgresql:
     image: postgres:16
+    container_name: postgresql
     ports:
       - "5432:5432"
     environment:
@@ -14,6 +43,7 @@ services:
 
   liquibase-migrations:
     image: liquibase/liquibase:4.25
+    container_name: liquibase-migrations
     depends_on:
       - postgresql
     command:
@@ -38,6 +68,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     volumes:
       - zookeeper-data:/var/lib/zookeeper/data
+    networks:
+      - kafka-network
 
   kafka1:
     image: confluentinc/cp-kafka:7.3.2
@@ -58,6 +90,8 @@ services:
       - zookeeper
     volumes:
       - kafka1-data:/var/lib/kafka/data
+    networks:
+      - kafka-network
 
   kafka2:
     image: confluentinc/cp-kafka:7.3.2
@@ -78,6 +112,9 @@ services:
       - zookeeper
     volumes:
       - kafka2-data:/var/lib/kafka/data
+    networks:
+      - kafka-network
+
   init-kafka:
     image: confluentinc/cp-kafka:7.3.2
     depends_on:
@@ -123,6 +160,8 @@ volumes:
 
 
 networks:
+  applications: { }
+  kafka-network: { }
   backend: { }
   monitoring:
     driver: bridge

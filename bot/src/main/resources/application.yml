@@ -14,7 +14,7 @@ spring:
     cache-names:
       - rate-limit-bucket
   kafka:
-    bootstrap-servers: localhost:29091,localhost:29092
+    bootstrap-servers: unset
 
 server:
   port: 8090

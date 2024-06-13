@@ -17,7 +17,7 @@ public class BotClientTest {
 
     @BeforeEach
     public void setup() {
-        wireMockServer = new WireMockServer(1124);
+        wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
     }
