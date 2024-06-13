@@ -20,7 +20,7 @@ server:
   port: 8090
 
 kafka-config:
-  enable: true
+  enable: false
   updates-topic-name: updates
 
 logging:
@@ -59,3 +59,18 @@ resilience4j:
         exponential-backoff-multiplier: 2
         max-attempts: 1
         wait-duration: 1s
+
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      exposure:
+        include: info, health, prometheus
+      base-path:  /
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}

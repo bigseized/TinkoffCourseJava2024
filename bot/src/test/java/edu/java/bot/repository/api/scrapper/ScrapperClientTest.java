@@ -41,7 +41,7 @@ class ScrapperClientTest {
 
     @BeforeEach
     public void setup() {
-        wireMockServer = new WireMockServer();
+        wireMockServer = new WireMockServer(1124);
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
     }

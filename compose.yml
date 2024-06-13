@@ -96,6 +96,25 @@ services:
       kafka-topics --bootstrap-server kafka1:9091,kafka2:9092 --list
       "
 
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+
 volumes:
   postgresql: { }
   kafka1-data: { }
@@ -105,3 +124,5 @@ volumes:
 
 networks:
   backend: { }
+  monitoring:
+    driver: bridge
